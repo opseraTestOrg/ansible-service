@@ -13,20 +13,22 @@ import com.opsera.ansible.request.dto.AnsiblePlayBookClientRequest;
 import com.opsera.ansible.request.dto.AnsiblePlaybookServerRequestDto;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
 import com.opsera.ansible.service.AnsibleService;
+
 //TODO loggers and exception handling
 /**
  * @author sreeni
  *
  */
 public class DeleteCheckoutFolderServiceImpl implements AnsibleService {
-    
+
     @Autowired
     private IServiceFactory serviceFactory;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DeleteCheckoutFolderServiceImpl.class);
-    
+
     /**
-     *This method used to create an AnsiblePlaybookServerRequestDto for DeleteCheckoutFolderServiceImpl
+     * This method used to create an AnsiblePlaybookServerRequestDto for
+     * DeleteCheckoutFolderServiceImpl
      */
     @Override
     public AnsiblePlaybookServerRequestDto getAnsiblePlaybookRequest(AnsiblePlayBookClientRequest ansiblePlayBookRequest) {
@@ -40,7 +42,7 @@ public class DeleteCheckoutFolderServiceImpl implements AnsibleService {
                 List<String> options = new ArrayList<>();
                 options.add("-e");
                 options.add("\"");
-                options.add("gitCheckoutPath=" + ansiblePlayBookRequest.getGitCheckoutPath());
+                options.add("gitCheckoutDir=" + AnsibleServiceConstants.TEMP__GIT_CHECKOUT_PATH);
                 options.add("\"");
                 ansibleFileCreationRequestDto.setCommandArgs(options);
             }

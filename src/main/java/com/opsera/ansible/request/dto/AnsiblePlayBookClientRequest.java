@@ -17,19 +17,15 @@ import lombok.NoArgsConstructor;
 @JsonInclude(value = Include.NON_NULL)
 @NoArgsConstructor
 public class AnsiblePlayBookClientRequest {
-    
+
     private AnsibleConnectionClientRequest ansibleClientRequest;
 
-    private Map<String,String> commandArgs;
-    
-    private AnsibleServiceType  serviceType;
-    
-    private String gitRepositoryPath;
-    
-    private String gitCheckoutPath;
-    
+    private Map<String, String> commandArgs;
+
+    private AnsibleServiceType serviceType;
+
     private String gitFileName;
-    
+
     private String gitFileLocation;
 
 }
