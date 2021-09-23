@@ -39,15 +39,13 @@ public class FileCreationServiceImpl implements AnsibleService {
 
             if (ansiblePlayBookRequest != null) {
                 ansiblePlaybookServerRequestDto.setAnsibleClientRequest(ansiblePlayBookRequest.getAnsibleClientRequest());
-                String localPlaybookPath = ansiblePlayBookRequest.getGitCheckoutPath() + "//" + ansiblePlayBookRequest.getGitFileLocation() + "//" + ansiblePlayBookRequest.getGitFileName();
+                String localPlaybookPath = AnsibleServiceConstants.TEMP__GIT_CHECKOUT_PATH + ansiblePlayBookRequest.getGitFileLocation() + "//" + ansiblePlayBookRequest.getGitFileName();
                 ansiblePlaybookServerRequestDto.setServerPlaybookPath(localPlaybookPath);
                 Map<String, String> argMap = ansiblePlayBookRequest.getCommandArgs();
                 List<String> options = new ArrayList<>();
                 options.add("-e");
                 options.add("\"");
                 options.add("destination=" + argMap.get("filepath") + argMap.get("filename"));
-                options.add("gitRepositoryPath=" + ansiblePlayBookRequest.getGitRepositoryPath());
-                options.add("gitCheckoutPath=" + ansiblePlayBookRequest.getGitCheckoutPath());
                 options.add("\"");
                 ansiblePlaybookServerRequestDto.setCommandArgs(options);
             }

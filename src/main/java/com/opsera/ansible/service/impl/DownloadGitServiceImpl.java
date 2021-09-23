@@ -41,8 +41,8 @@ public class DownloadGitServiceImpl implements AnsibleService {
                 List<String> options = new ArrayList<>();
                 options.add("-e");
                 options.add("\"");
-                options.add("gitRepository=" + ansiblePlayBookRequest.getGitRepositoryPath());
-                options.add("gitCheckoutDir=" + ansiblePlayBookRequest.getGitCheckoutPath());
+//                options.add("gitRepository=" + ansiblePlayBookRequest.getGitRepositoryPath());
+                options.add("gitCheckoutDir=" + AnsibleServiceConstants.TEMP__GIT_CHECKOUT_PATH);
                 options.add("\"");
                 ansiblePlaybookServerRequestDto.setCommandArgs(options);
             }
