@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
-import com.github.woostju.ansible.ReturnValue;
+import com.opsera.ansible.client.util.ReturnValue;
 import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.request.dto.AnsiblePlayBookResponseDto;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
@@ -24,7 +24,7 @@ public class AnsibleUtility {
      * @param ansibleResponse Map<String, ReturnValue>
      * @return Map<String, AnsiblePlaybookResponseDto>
      */
-    public Map<String, AnsiblePlayBookResponseDto> getAnsiblePlaybookResponse(Map<String, ReturnValue> ansibleResponse) {
+    public Map<String, AnsiblePlayBookResponseDto> getAnsibleCustomResponse(Map<String, ReturnValue> ansibleResponse) {
         Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<>();
         try {
             if (ansibleResponse != null) {

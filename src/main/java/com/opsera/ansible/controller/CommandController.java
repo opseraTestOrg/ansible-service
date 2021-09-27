@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.woostju.ansible.AnsibleClient;
-import com.github.woostju.ansible.ReturnValue;
-import com.github.woostju.ansible.command.PingCommand;
-import com.github.woostju.ansible.command.PlaybookCommand;
+import com.opsera.ansible.client.command.PingCommand;
+import com.opsera.ansible.client.command.PlaybookCommand;
+import com.opsera.ansible.client.util.AnsibleClient;
+import com.opsera.ansible.client.util.ReturnValue;
 import com.opsera.ansible.config.IServiceFactory;
 import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.request.dto.AnsibleConnectionClientRequest;
@@ -75,9 +75,10 @@ public class CommandController {
      */
     @PostMapping(path = "/testConnection")
     @ApiOperation("Test Connectivity with Ansible server")
-    public ResponseEntity<Map<String, ReturnValue>> executePingCommand(@RequestBody AnsibleConnectionClientRequest ansibleClientRequest) {
+    public ResponseEntity<Map<String, AnsiblePlayBookResponseDto>> executePingCommand(@RequestBody AnsibleConnectionClientRequest ansibleClientRequest) {
         stopwatch.start();
         Map<String, ReturnValue> result = new HashMap<String, ReturnValue>();
+        Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<>();
         LOGGER.info(AnsibleServiceConstants.CREATE_NEW_ANSIBLE_CLIENT_IN_COMMAND_OPERATIONS_CONTROLLER_INFO);
         String hostName = null;
         Map<String, ReturnValue> validateErrors = null;
@@ -89,13 +90,10 @@ public class CommandController {
                 ansibleClient.setAnsibleRootPath("");
                 result = ansibleClient.execute(new PingCommand(Lists.newArrayList(hostName)), AnsibleServiceConstants.TIMEOUT_SERVER);
                 LOGGER.info(AnsibleServiceConstants.PING_ANSIBLE_SERVER_SUCESSFULLY_IN_COMMAND_CONTROLLER_INFO);
-                // TODO - Check if the result is empty then create a error response as result
-                // empty becomes when there is a issue in connecting to the ansible server.
-                // java.lang.RuntimeException: java.lang.RuntimeException: create ssh client
-                // fail
-                // Error format should be same as the success format.
+                ansiblecustomResponse = commandService.validatePingResponse(result, ansibleClientRequest);
+                
             } else {
-                result = validateErrors;
+                ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(validateErrors);;
             }
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTING_PING_COMMAND_THROUGH_ANSIBLE_CLIENT_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
@@ -105,7 +103,7 @@ public class CommandController {
             LOGGER.info(AnsibleServiceConstants.EXECUTING_PING_COMMAND_COMPLETED, stopwatch.getTotalTimeMillis());
         }
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(ansiblecustomResponse, HttpStatus.OK);
 
     }
 
@@ -129,7 +127,7 @@ public class CommandController {
             List<String> hosts = new ArrayList<String>();
             hosts.add(ansibleClientRequest.getHostName());
             Map<String, ReturnValue> result = ansibleClient.execute(new PlaybookCommand(hosts, playBookPath, null), AnsibleServiceConstants.TIMEOUT_SERVER);
-            ansiblecustomResponse = ansibleUtility.getAnsiblePlaybookResponse(result);
+            ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(result);
             LOGGER.info(AnsibleServiceConstants.COMPLETED_TO_EXECUTE_PLAYBOOK_IN_ANSIBLE_SERVER_SUCESSFULLY_INFO);
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_THROUGH_ANSIBLE_CLIENT_ERROR, serviceFactory.gson().toJson(ansibleClientRequest), playBookPath);
@@ -166,9 +164,9 @@ public class CommandController {
                 commandService.downloadFilesFromGithub(ansibleClient, ansiblePlayBookRequest);
                 Map<String, ReturnValue> result = commandService.createFile(ansibleClient, ansiblePlayBookRequest);
                 commandService.deleteGitCheckoutFiles(ansibleClient, ansiblePlayBookRequest);
-                ansiblecustomResponse = ansibleUtility.getAnsiblePlaybookResponse(result);
+                ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(result);
             } else {
-                ansiblecustomResponse = ansibleUtility.getAnsiblePlaybookResponse(validateErrors);
+                ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(validateErrors);
             }
             LOGGER.info(AnsibleServiceConstants.COMPLETED_TO_EXECUTE_PLAYBOOK_IN_ANSIBLE_SERVER_SUCESSFULLY_INFO);
         } catch (Exception ex) {
