@@ -17,14 +17,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.woostju.ansible.AnsibleClient;
-import com.github.woostju.ansible.ReturnValue;
-import com.github.woostju.ansible.ReturnValue.Result;
-import com.github.woostju.ansible.command.PlaybookCommand;
+import com.opsera.ansible.client.command.PlaybookCommand;
+import com.opsera.ansible.client.util.AnsibleClient;
+import com.opsera.ansible.client.util.ReturnValue;
+import com.opsera.ansible.client.util.ReturnValue.Result;
 import com.opsera.ansible.config.IServiceFactory;
 import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.request.dto.AnsibleConnectionClientRequest;
 import com.opsera.ansible.request.dto.AnsiblePlayBookClientRequest;
+import com.opsera.ansible.request.dto.AnsiblePlayBookResponseDto;
 import com.opsera.ansible.request.dto.AnsiblePlaybookServerRequestDto;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
 import com.opsera.ansible.service.AnsibleServiceFactory.AnsibleServiceType;
@@ -78,7 +79,92 @@ public class CommandService {
     }
 
     /**
-     * @param Map<String, String>  errorsMap
+     * @param Map<String, ReturnValue> responseMap
+     * @param AnsibleConnectionClientRequest ansibleClientRequest
+     * @return Map<String, AnsiblePlayBookResponseDto> ansibleCustomResponse
+     */
+    public Map<String, AnsiblePlayBookResponseDto> validatePingResponse(Map<String, ReturnValue> responseMap, AnsibleConnectionClientRequest ansibleClientRequest) {
+
+        Map<String, AnsiblePlayBookResponseDto> ansibleCustomResponse = new HashMap<>();
+        try {
+            if (responseMap.isEmpty()) {
+                Map<String, String> errors = new HashMap<>();
+                errors.put(AnsibleServiceConstants.ERROR_ANS410, AnsibleServiceConstants.CLIENT_CREATION_FAILURE_ERROR);
+                return getFormattedErrorResponseForPingCommand(errors, ansibleClientRequest);
+            } else {
+                if (responseMap != null) {
+                    responseMap.entrySet().parallelStream().filter(Objects::nonNull).forEach(ansibleResInstance -> {
+                        String stautsForServer = ansibleResInstance.getKey();
+                        Object valueRef = ansibleResInstance.getValue();
+                        if (valueRef instanceof ReturnValue) {
+                            AnsiblePlayBookResponseDto ansibleCommandLineResp = new AnsiblePlayBookResponseDto();
+                            ansibleCommandLineResp.setRc(((ReturnValue) valueRef).getRc());
+                            ansibleCommandLineResp.setResult(((ReturnValue) valueRef).getResult().toString());
+                            ansibleCommandLineResp.setSuccess(((ReturnValue) valueRef).isSuccess());
+                            ansibleCommandLineResp.setStdout(((ReturnValue) valueRef).getStdout());
+
+                            if (((ReturnValue) valueRef).getResult() == Result.unmanaged) {
+                                ansibleCommandLineResp.setSuccess(true);
+                            }
+                            ;
+                            ansibleCustomResponse.put(stautsForServer, ansibleCommandLineResp);
+                        } else if (valueRef instanceof Map<?, ?>) {
+                            if (!((Map<?, ?>) valueRef).isEmpty()) {
+                                AnsiblePlayBookResponseDto ansibleCommandLineResp = new AnsiblePlayBookResponseDto();
+                                ansibleCommandLineResp.setRc((int) ((Map<?, ?>) valueRef).get(AnsibleServiceConstants.RESPONSE_RC));
+                                ansibleCommandLineResp.setResult((String) ((Map<?, ?>) valueRef).get(AnsibleServiceConstants.RESPONSE_RESULT));
+                                ansibleCommandLineResp.setSuccess((Boolean) ((Map<?, ?>) valueRef).get(AnsibleServiceConstants.RESPONSE_SUCCESS));
+                                ansibleCommandLineResp.setStdout((List<String>) ((Map<?, ?>) valueRef).get(AnsibleServiceConstants.RESPONSE_STDOUT));
+                                if (((Map<?, ?>) valueRef).get(AnsibleServiceConstants.RESPONSE_RESULT) == Result.unmanaged) {
+                                    ansibleCommandLineResp.setSuccess(true);
+                                }
+                                ;
+                                ansibleCustomResponse.put(stautsForServer, ansibleCommandLineResp);
+                            }
+                        }
+
+                    });
+                }
+            }
+
+            return ansibleCustomResponse;
+        } catch (Exception ex) {
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_PING_RESPONSE_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
+            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_PING_RESPONSE_ERROR + ex.getMessage());
+        }
+    }
+
+    /**
+     * @param Map<String, String> errorsMap
+     * @param AnsibleConnectionClientRequest ansibleClientRequest
+     * @return Map<String, AnsiblePlayBookResponseDto> errorMap
+     */
+    private Map<String, AnsiblePlayBookResponseDto> getFormattedErrorResponseForPingCommand(Map<String, String> errorsMap, AnsibleConnectionClientRequest ansibleClientRequest) {
+        Map<String, AnsiblePlayBookResponseDto> errorMap = new HashMap<String, AnsiblePlayBookResponseDto>();
+        try {
+
+            if (!errorsMap.isEmpty()) {
+                AnsiblePlayBookResponseDto returnValue = new AnsiblePlayBookResponseDto();
+                returnValue.setResult(Result.failed.toString());
+                List<String> errorMsgs = new ArrayList<>();
+                errorsMap.entrySet().parallelStream().filter(Objects::nonNull).forEach(pair -> {
+                    errorMsgs.add(pair.getKey() + AnsibleServiceConstants.ERROR_FORMAT_HYPHEN + pair.getValue());
+                });
+
+                returnValue.setStdout(errorMsgs);
+                returnValue.setSuccess(false);
+                errorMap.put(ansibleClientRequest.getHostName(), returnValue);
+
+            }
+        } catch (Exception ex) {
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_FORMATTING_CUSTOM_PING_FAILURE_RESPONSE_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
+            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_FORMATTING_CUSTOM_PING_FAILURE_RESPONSE_ERROR + ex.getMessage());
+        }
+        return errorMap;
+    }
+
+    /**
+     * @param Map<String,                    String> errorsMap
      * @param AnsibleConnectionClientRequest ansibleClientRequest
      * @return Map<String, ReturnValue> errorMap
      */
@@ -144,9 +230,9 @@ public class CommandService {
         }
         return errorMap;
     }
-    
+
     /**
-     * @param ansibleClient AnsibleClient
+     * @param ansibleClient          AnsibleClient
      * @param ansiblePlayBookRequest AnsiblePlayBookClientRequest
      */
     public void downloadFilesFromGithub(AnsibleClient ansibleClient, AnsiblePlayBookClientRequest ansiblePlayBookRequest) {
@@ -154,13 +240,13 @@ public class CommandService {
         try {
             executePlaybook(ansibleClient, ansiblePlayBookRequest, AnsibleServiceType.DownloadFromGit);
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DOWNLOAD_GITHUB_FOLDER_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest) );
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DOWNLOAD_GITHUB_FOLDER_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DOWNLOAD_GITHUB_FOLDER_PLAYBOOK_ANSIBLE_SERVER + ex.getMessage());
         }
     }
-    
+
     /**
-     * @param ansibleClient AnsibleClient
+     * @param ansibleClient          AnsibleClient
      * @param ansiblePlayBookRequest AnsiblePlayBookClientRequest
      * @return Map<String, ReturnValue> result
      */
@@ -170,16 +256,16 @@ public class CommandService {
         try {
             result = executePlaybook(ansibleClient, ansiblePlayBookRequest, ansiblePlayBookRequest.getServiceType());
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_CREATION_FILE_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest) );
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_CREATION_FILE_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_CREATION_FILE_PLAYBOOK_ANSIBLE_SERVER + ex.getMessage());
         }
-        
+
         return result;
 
     }
 
     /**
-     * @param AnsibleClient ansibleClient
+     * @param AnsibleClient                ansibleClient
      * @param AnsiblePlayBookClientRequest ansiblePlayBookRequest
      */
     public void deleteGitCheckoutFiles(AnsibleClient ansibleClient, AnsiblePlayBookClientRequest ansiblePlayBookRequest) {
@@ -187,14 +273,14 @@ public class CommandService {
         try {
             executePlaybook(ansibleClient, ansiblePlayBookRequest, AnsibleServiceType.DeleteGitCheckoutFolder);
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DELETE_CHECKOUT_FOLDER_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest) );
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DELETE_CHECKOUT_FOLDER_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DELETE_CHECKOUT_FOLDER_PLAYBOOK_ANSIBLE_SERVER + ex.getMessage());
         }
 
     }
 
     /**
-     * @param ansibleClient AnsibleClient
+     * @param ansibleClient          AnsibleClient
      * @param ansiblePlayBookRequest
      * @param ansibleServiceType
      * @return Map<String, ReturnValue>
@@ -208,7 +294,7 @@ public class CommandService {
                     ansiblePlaybookServerRequestDto.getServerPlaybookPath(), ansiblePlaybookServerRequestDto.getCommandArgs()), AnsibleServiceConstants.TIMEOUT_SERVER);
 
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest) , ansibleServiceType);
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest), ansibleServiceType);
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_PLAYBOOK_ANSIBLE_SERVER + ex.getMessage());
         }
         return result;
@@ -228,7 +314,5 @@ public class CommandService {
         Matcher m = p.matcher(hostIPAddress);
         return m.matches();
     }
-
-   
 
 }

@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.github.woostju.ansible.AnsibleClient;
-import com.github.woostju.ssh.SshClientConfig;
-import com.github.woostju.ssh.pool.SshClientsPool;
+import com.opsera.ansible.client.util.AnsibleClient;
 import com.opsera.ansible.config.IServiceFactory;
 import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.request.dto.AnsibleConnectionClientRequest;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
+import com.opsera.ansible.ssh.SshClientConfig;
+import com.opsera.ansible.ssh.pool.SshClientsPool;
 
 /**
  * @author sreeni
