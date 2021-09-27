@@ -53,6 +53,8 @@ public class AnsibleServiceConstants {
 
     public static final String EXECUTING_PING_COMMAND_COMPLETED = "Execution of the ping command completed in ";
     public static final String EXECUTING_PLAYBOOK_COMMAND_COMPLETED = "Execution of the playbook command completed in ";
+    
+    public static final String ERROR_WHILE_CONNECTING_ANSIBLE_SERVER_ERROR = "Error while connectiong to ansible server";
 
     /**
      * Error-Codes are used in the validation payload process.
@@ -68,6 +70,7 @@ public class AnsibleServiceConstants {
     public static final String ERROR_ANS407 = "ANS407";
     public static final String ERROR_ANS408 = "ANS408";
     public static final String ERROR_ANS409 = "ANS409";
+    public static final String ERROR_ANS410 = "ANS410";
 
     /**
      * Error-Messages are used in the validation payload process.
@@ -81,6 +84,7 @@ public class AnsibleServiceConstants {
     public static final String ERROR_IN_INPUT_PAYLOAD = "Error in Input Payload";
     public static final String EXECUTION_FAILED_WHILE_VALIDATING_INPUT_ERROR = "Error in validation of input fields in CommandService::validatePayloadforCommand ";
     public static final String EXECUTION_FAILED_WHILE_VALIDATING_FILE_CREATION_PAYLOAD_INPUT_ERROR = "Error in validation of file creation payload in CommandService::validatePayloadforFileCreation ";;
+    public static final String CLIENT_CREATION_FAILURE_ERROR = "java.lang.RuntimeException: create ssh client";
 
     public static final String PLEASE_PROVIDE_CORRECT_COMMAND_VALUE_ERROR = "Please provide correct command value";
     public static final String PLEASE_PROVIDE_CORRECT_FILENAME_VALUE_ERROR = "Please provide correct filename value";
@@ -95,6 +99,8 @@ public class AnsibleServiceConstants {
     public static final String EXECUTING_DELETE_CHECKOUT_SERVICE_IMPL_ERROR = "Error while executing in DeleteCheckoutFolderServiceImpl::getAnsiblePlaybookRequest";
     public static final String EXECUTING_FILE_CREATION_SERVICE_IMPL_ERROR = "Error while executing in FileCreationServiceImpl::getAnsiblePlaybookRequest";
     public static final String EXECUTING_DOWNLOAD_GIT_CHECKOUT_SERVICE_IMPL_ERROR = "Error while executing in DownloadGitServiceImpl::getAnsiblePlaybookRequest";
-    public static final String EXECUTION_FAILED_WHILE_GETTING_ANSIBLE_SERVICE_IMPL = "Error while getting ANsible Service Impl in AnsibleServiceFactory::getAnsibleService";;
+    public static final String EXECUTION_FAILED_WHILE_GETTING_ANSIBLE_SERVICE_IMPL = "Error while getting ANsible Service Impl in AnsibleServiceFactory::getAnsibleService";
+    public static final String EXECUTION_FAILED_WHILE_VALIDATING_PING_RESPONSE_ERROR = "Error while formatting the error response from ping command execution";
+    public static final String EXECUTION_FAILED_WHILE_FORMATTING_CUSTOM_PING_FAILURE_RESPONSE_ERROR = "Error while formatting custom failure error response from ping command execution";
 
 }
