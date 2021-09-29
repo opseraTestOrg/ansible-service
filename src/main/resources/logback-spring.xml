@@ -53,13 +53,13 @@
 		</triggeringPolicy>
 	</appender>
 
-<appender name="awsLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_PATH}/aws.log</file>
+<appender name="ansibleLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/ansible.log</file>
 		<encoder>
 			<pattern>${LOG_PATTERN}</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>${LOG_PATH}/aws-%i.log
+			<fileNamePattern>${LOG_PATH}/ansible-%i.log
 			</fileNamePattern>
 			<minIndex>1</minIndex>
 			<maxIndex>10</maxIndex>
@@ -78,10 +78,4 @@
 		<appender-ref ref="springLog" />
 		<appender-ref ref="console" />
 	</logger>
-	<logger name="com.amazonaws" level="DEBUG">
-		<appender-ref ref="awsLog" />
-		<appender-ref ref="console" />
-	</logger>
-
-
 </configuration>
