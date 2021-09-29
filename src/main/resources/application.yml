@@ -1,0 +1,75 @@
+logging:
+   file: ansibleService
+   path: /apps/OpsERA/logs/components/ansible-service
+
+   
+hosted:
+ zoneId: Z1TIQL15FE1S33
+spring:
+   application:
+    name: ansible-service
+    description: API interacting with ansible endpoints
+   servlet:
+     multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+server:
+   port: 9080
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 1800
+    leaseExpirationDurationInSeconds: 3600
+
+---
+
+spring:
+   profiles: freetrial
+pipeline:
+  config:
+    baseurl: https://freetrial-microservice.opsera.io/api/pipeline
+vault:
+  config:
+    baseurl: https://freetrial-microservice.opsera.io/api/vault
+customer:
+  config:
+    baseurl: https://freetrial-microservice.opsera.io/api/customer/
+kafka:
+  config:
+    baseurl: https://apigateway.opsera-test-private.opsera.io/api/kafka
+  consumer:
+    bootstrapServer: 10.0.2.156:9092,10.0.2.235:9092,10.0.2.234:9092
+    groupId: s3-log-pusher
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: https://freetrial-microservice.opsera.io:8761/eureka/
+amazonProperties:
+  accessKey: AKIAWNKXHD3I5DWIHL2E
+  secretKey: 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
+  
+---
+
+spring:
+  profiles: kubernetes
+pipeline:
+ config:
+  baseurl: https://apigateway.opsera-dev-private.opsera.io/api/pipeline
+vault:
+ config:
+  baseurl: https://apigateway.opsera-dev-private.opsera.io/api/vault
+customer:
+ config:
+  baseurl: https://apigateway.opsera-dev-private.opsera.io/api/customer/
+kafka:
+ config:
+    baseurl: https://apigateway.opsera-dev-private.opsera.io/api/kafka
+ consumer:
+  bootstrapServer: abfddd837c0914516aeff9f3ef667b10-866acafb6124ce47.elb.us-east-2.amazonaws.com:9094
+  groupId: s3-log-pusher
+eureka:
+ client:
+  serviceUrl:
+   defaultZone: https://apigateway.opsera-dev-private.opsera.io:8761/eureka/
+amazonProperties:
+  accessKey: AKIAWNKXHD3IUKQXB3FI
+  secretKey: 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
