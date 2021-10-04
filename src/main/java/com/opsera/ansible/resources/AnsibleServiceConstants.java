@@ -28,6 +28,12 @@ public class AnsibleServiceConstants {
     public static final String FILENAME = "filename";
     public static final String FILEPATH = "filepath";
 
+    public static final String GITASK_CONFIG_PATH = "gittask/configuration";
+    public static final String PIPELINE_CONFIG_PATH = "tools/configuration";
+    public static final String QUERY_PARAM_CUSTOMER_ID = "customerId";
+    public static final String QUERY_PARAM_TOOL_ID = "toolId";
+    public static final String V2_REGISTRY_TOOL_END_POINT = "/v2/registry/tool";
+
     /**
      * Info-messages are used in the Ansible execution process.
      */
@@ -53,7 +59,7 @@ public class AnsibleServiceConstants {
 
     public static final String EXECUTING_PING_COMMAND_COMPLETED = "Execution of the ping command completed in ";
     public static final String EXECUTING_PLAYBOOK_COMMAND_COMPLETED = "Execution of the playbook command completed in ";
-    
+
     public static final String ERROR_WHILE_CONNECTING_ANSIBLE_SERVER_ERROR = "Error while connectiong to ansible server";
 
     /**
@@ -103,4 +109,9 @@ public class AnsibleServiceConstants {
     public static final String EXECUTION_FAILED_WHILE_VALIDATING_PING_RESPONSE_ERROR = "Error while formatting the error response from ping command execution";
     public static final String EXECUTION_FAILED_WHILE_FORMATTING_CUSTOM_PING_FAILURE_RESPONSE_ERROR = "Error while formatting custom failure error response from ping command execution";
 
+    public static final String ERROR_WHILE_RETRIVING_TOOL_CONFIG_DETAILS = "Error while retriving Tool config details in AnsibleUtility :: getToolConfigurationDetails";
+    public static final String ERROR_WHILE_RETRIVING_TOOL_CONFIG_DETAILS_FROM_ENDPOINT = "Error while retriving Tool config details in ToolConfigurationService :: getToolConfigurationDetails";
+
+    public static final String ERROR_WHILE_SETTING_TOOL_CONFIG_DETAILS_FOR_ANSIBLE_CLIENT = "Error while setting  Tool config details in CommandService :: setAnsibleClientConnectionDetails";
+    public static final String ERROR_WHILE_EXECUTING_PLAYBOOK_FROM_KAFKA = "Error while executing play book from Kafka in  CommandService :: executePlaybook";
 }

@@ -1,5 +1,8 @@
 package com.opsera.ansible.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,9 +12,6 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Holds all the kafka server's consumer related configuration
@@ -41,7 +41,10 @@ public class KafkaConfig {
 
         return new DefaultKafkaConsumerFactory<>(config);
     }
-
+    /**
+     * 
+     * @return ConcurrentKafkaListenerContainerFactory concurrentKafkaListenerContainerFactory
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();

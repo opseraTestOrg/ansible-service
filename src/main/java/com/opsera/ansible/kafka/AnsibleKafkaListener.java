@@ -1,4 +1,4 @@
-package com.opsera.ansible.listener;
+package com.opsera.ansible.kafka;
 
 import static com.opsera.ansible.resources.AnsibleKafkaConstants.ANSIBLE_REQUEST_TOPIC;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.opsera.ansible.config.IServiceFactory;
 import com.opsera.ansible.resources.AnsibleKafkaConstants;
-
+import com.opsera.ansible.service.AnsibleRequestProcessor;
 
 /**
  * The listener interface for receiving awsKafka events. The class that is
@@ -48,11 +48,10 @@ public class AnsibleKafkaListener {
      */
     @KafkaListener(topics = ANSIBLE_REQUEST_TOPIC)
     public void processAWSLambdaFunctionCreationRequest(String message) {
-        System.out.println("Message Received from kafka topic" +message );
+        System.out.println("Message Received from kafka topic" + message);
         LOGGER.info(AnsibleKafkaConstants.ANSIBLE_REQUEST_RECEIVED_TO_EXECUTE_A_COMMAND, message);
-        // TODO CHECK THE MESSAGE FROM KAFKA TOPIC HOW IT IS COMING
-        //AWSLamdaRequestProcessor aWSLamdaRequestProcessor = new AWSLamdaRequestProcessor(message, iServiceFactory);
-       // taskExecutor.execute(aWSLamdaRequestProcessor);
+        AnsibleRequestProcessor ansibleRequestProcessor = new AnsibleRequestProcessor(message, iServiceFactory);
+        taskExecutor.execute(ansibleRequestProcessor);
 
     }
 
