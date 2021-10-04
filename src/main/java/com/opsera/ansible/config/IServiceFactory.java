@@ -8,6 +8,7 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
+import com.opsera.ansible.service.CommandService;
 
 /**
  * @author sreeni
@@ -21,5 +22,7 @@ public interface IServiceFactory {
     public StopWatch stopWatch();
 
     public RestTemplate getRestTemplate();
+
+    public CommandService getCommandService();
 
 }

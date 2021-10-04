@@ -1,14 +1,18 @@
 package com.opsera.ansible.exception;
 
+/**
+ * @author sreeni
+ *
+ */
 public class AnsibleServiceException extends RuntimeException {
 
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
-    
+
     private final String code;
-    
+
     /**
      * @param message
      */
@@ -16,14 +20,12 @@ public class AnsibleServiceException extends RuntimeException {
         super(message);
         this.code = "";
     }
-    
-    
 
     /**
      * 
-     * @param message String 
-     * @param cause Throwable
-     * @param code String
+     * @param message String
+     * @param cause   Throwable
+     * @param code    String
      */
     public AnsibleServiceException(String message, Throwable cause, String code) {
         super(message, cause);
@@ -32,7 +34,7 @@ public class AnsibleServiceException extends RuntimeException {
 
     /**
      * 
-     * @param code  String
+     * @param code    String
      * @param message String
      */
     public AnsibleServiceException(String code, String message) {
@@ -43,7 +45,7 @@ public class AnsibleServiceException extends RuntimeException {
     /**
      * 
      * @param cause Throwable
-     * @param code String
+     * @param code  String
      */
     public AnsibleServiceException(Throwable cause, String code) {
         super(cause);
