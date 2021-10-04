@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 import com.opsera.ansible.client.util.AnsibleClient;
 import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.dto.AnsibleConnectionClientRequest;
 import com.opsera.ansible.exception.AnsibleServiceException;
-import com.opsera.ansible.request.dto.AnsibleConnectionClientRequest;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
 import com.opsera.ansible.ssh.SshClientConfig;
 import com.opsera.ansible.ssh.pool.SshClientsPool;
