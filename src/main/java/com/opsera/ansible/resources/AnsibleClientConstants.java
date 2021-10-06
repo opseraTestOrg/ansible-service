@@ -24,7 +24,7 @@ public class AnsibleClientConstants {
     // the host is not in inventory
     public static Pattern head_inventory_no_host_pattern = Pattern.compile(".*(Could not match supplied host pattern).*");
     public static Pattern head_ip_pattern = Pattern.compile("\\d+\\.\\d+\\.\\d+\\.\\d+");
-    
+
     public static final String RESULT_FAILED = "FAILED!";
     public static final String RESULT_UNREACHABLE = "UNREACHABLE!";
     public static final String RESULT_SUCCESS = "SUCCESS";
@@ -41,7 +41,7 @@ public class AnsibleClientConstants {
     public static final String START_SESSION_FAIL_WITH_SERVER_INPUT_ERROR = "start session fail with server input:";
     public static final String AUTH_WITH_PASSWORD_DEBUG = "auth with password";
     public static final String SSHJ_GET_EXCEPTION_WHEN_CONNECT_ERROR = "sshj get exception when connect and will retry one more time ";
-    
+
     public static final String MISSING_CLIENT_CONFIG_ERROR = "missing client config";
     public static final String EXECUTE_SSH_COMMAND_TIMEOUT = "execute ssh command timeout";
     public static final String EXECUTE_SSH_COMMAND_ERROR = "execute ssh command error ";
@@ -58,6 +58,6 @@ public class AnsibleClientConstants {
     public static final String COMMAND_EXECUTE_SUCCESS_WITH_RAW_OUTPUT_INFO = "command execute success with raw output";
     public static final String CLIENT_NOT_CONNECTED = "client not connected";
 
-   
+    public static final String ERROR_EXECUTE_SYSTEM_COMMAND = "error execute system command";
 
 }

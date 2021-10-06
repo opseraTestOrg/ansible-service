@@ -1,4 +1,4 @@
-package com.opsera.ansible.request.dto;
+package com.opsera.ansible.dto;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class AnsiblePlayBookResponseDto {
     private int rc;
 
     private Boolean success;
-    
-    private List<String> stdout; 
+
+    private List<String> stdout;
 
 }
