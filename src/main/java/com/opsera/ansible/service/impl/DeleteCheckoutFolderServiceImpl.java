@@ -2,17 +2,21 @@ package com.opsera.ansible.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.dto.AnsiblePlayBookClientRequest;
+import com.opsera.ansible.dto.AnsiblePlayBookResponseDto;
+import com.opsera.ansible.dto.AnsiblePlaybookServerRequestDto;
 import com.opsera.ansible.exception.AnsibleServiceException;
-import com.opsera.ansible.request.dto.AnsiblePlayBookClientRequest;
-import com.opsera.ansible.request.dto.AnsiblePlaybookServerRequestDto;
+import com.opsera.ansible.resources.AnsiblePayloadRequestConfig;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
 import com.opsera.ansible.service.AnsibleService;
+import com.opsera.ansible.util.JobStatus;
 
 /**
  * @author sreeni
@@ -51,6 +55,18 @@ public class DeleteCheckoutFolderServiceImpl implements AnsibleService {
         }
 
         return ansibleFileCreationRequestDto;
+    }
+    
+    @Override
+    public AnsiblePlayBookClientRequest getAnsiblePlaybookRequestFromKafka(AnsiblePayloadRequestConfig ansiblePayloadRequestConfig) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<String, JobStatus> getAnsibleJobStatus(Map<String, AnsiblePlayBookResponseDto> ansibleResponse) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -25,10 +25,10 @@ import com.opsera.ansible.client.command.PlaybookCommand;
 import com.opsera.ansible.client.util.AnsibleClient;
 import com.opsera.ansible.client.util.ReturnValue;
 import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.dto.AnsibleConnectionClientRequest;
+import com.opsera.ansible.dto.AnsiblePlayBookClientRequest;
+import com.opsera.ansible.dto.AnsiblePlayBookResponseDto;
 import com.opsera.ansible.exception.AnsibleServiceException;
-import com.opsera.ansible.request.dto.AnsibleConnectionClientRequest;
-import com.opsera.ansible.request.dto.AnsiblePlayBookClientRequest;
-import com.opsera.ansible.request.dto.AnsiblePlayBookResponseDto;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
 import com.opsera.ansible.service.AnsibleServiceFactory;
 import com.opsera.ansible.service.CommandService;
@@ -90,10 +90,11 @@ public class CommandController {
                 ansibleClient.setAnsibleRootPath("");
                 result = ansibleClient.execute(new PingCommand(Lists.newArrayList(hostName)), AnsibleServiceConstants.TIMEOUT_SERVER);
                 LOGGER.info(AnsibleServiceConstants.PING_ANSIBLE_SERVER_SUCESSFULLY_IN_COMMAND_CONTROLLER_INFO);
-                ansiblecustomResponse = commandService.validatePingResponse(result, ansibleClientRequest);
-                
+                ansiblecustomResponse = commandService.connectionResponseValidation(result, ansibleClientRequest);
+
             } else {
-                ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(validateErrors);;
+                ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(validateErrors);
+                ;
             }
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTING_PING_COMMAND_THROUGH_ANSIBLE_CLIENT_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
