@@ -18,5 +18,9 @@ public class AnsibleKafkaConstants {
     public static final String ANSIBLE_LOG_TOPIC = "opsera.pipeline.ansible.log";
     public static final String ANSIBLE_CONSOLE_LOG_TOPIC = "opsera.pipeline.ansible.console.log";
     public static final String ANSIBLE_REQUEST_RECEIVED_TO_EXECUTE_A_COMMAND ="Received a message to execute an ansible command";
+    public static final String ANSIBLE_REQUEST_RECEIVED ="Ansible Request received and its under prorcessing";
+    public static final String ANSIBLE_REQUEST_SUCESS="Success";
+    public static final String ANSIBLE_REQUEST_FAILURE="Failure";
+    
 
 }
