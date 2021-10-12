@@ -53,13 +53,13 @@ spring:
   profiles: kubernetes
 pipeline:
  config:
-  baseurl: https://apigateway.opsera-dev-private.opsera.io/api/pipeline
+  baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/pipeline
 vault:
  config:
-  baseurl: https://apigateway.opsera-dev-private.opsera.io/api/vault
+  baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/vault
 customer:
  config:
-  baseurl: https://apigateway.opsera-dev-private.opsera.io/api/customer/
+  baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/customer/
 kafka:
  config:
     baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/kafka
@@ -69,7 +69,7 @@ kafka:
 eureka:
  client:
   serviceUrl:
-   defaultZone: https://apigateway.opsera-dev-private.opsera.io:8761/eureka/
+   defaultZone: http://opsera-service-discovery.microservices.svc.cluster.local:8761/eureka/
 amazonProperties:
   accessKey: AKIAWNKXHD3IUKQXB3FI
   secretKey: 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
