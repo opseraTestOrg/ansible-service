@@ -64,7 +64,7 @@ kafka:
  config:
     baseurl: https://apigateway.opsera-dev-private.opsera.io/api/kafka
  consumer:
-  bootstrapServer: abfddd837c0914516aeff9f3ef667b10-866acafb6124ce47.elb.us-east-2.amazonaws.com:9094
+  bootstrapServer: kafka.kafka.svc.cluster.local:9092
   groupId: s3-log-pusher
 eureka:
  client:
