@@ -62,7 +62,7 @@ customer:
   baseurl: https://apigateway.opsera-dev-private.opsera.io/api/customer/
 kafka:
  config:
-    baseurl: https://apigateway.opsera-dev-private.opsera.io/api/kafka
+    baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/kafka
  consumer:
   bootstrapServer: kafka.kafka.svc.cluster.local:9092
   groupId: s3-log-pusher
