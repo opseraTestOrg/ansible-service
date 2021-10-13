@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -xe
-docker build -t opsera-ansible-integrator:kube-dev  ../../
+docker build -t opsera-ansible-service:kube-dev  ../../
 docker run --rm \
         440953937617.dkr.ecr.us-east-2.amazonaws.com/kubectl \
         aws ecr get-login-password \
@@ -10,8 +10,8 @@ docker run --rm \
         --password-stdin 440953937617.dkr.ecr.us-east-2.amazonaws.com
 
 date_tag=`date +%-d-%m-%Y-%T | sed 's/:/-/g'`
-docker tag opsera-ansible-integrator:kube-dev 440953937617.dkr.ecr.us-east-2.amazonaws.com/opsera-ansible-integrator:kube-dev
-docker tag opsera-ansible-integrator:kube-dev 440953937617.dkr.ecr.us-east-2.amazonaws.com/opsera-ansible-integrator:kube-dev-${date_tag}
+docker tag opsera-ansible-service:kube-dev 440953937617.dkr.ecr.us-east-2.amazonaws.com/opsera-ansible-service:kube-dev
+docker tag opsera-ansible-service:kube-dev 440953937617.dkr.ecr.us-east-2.amazonaws.com/opsera-ansible-service:kube-dev-${date_tag}
 
-docker push 440953937617.dkr.ecr.us-east-2.amazonaws.com/opsera-ansible-integrator:kube-dev
-docker push 440953937617.dkr.ecr.us-east-2.amazonaws.com/opsera-ansible-integrator:kube-dev-${date_tag}
+docker push 440953937617.dkr.ecr.us-east-2.amazonaws.com/opsera-ansible-service:kube-dev
+docker push 440953937617.dkr.ecr.us-east-2.amazonaws.com/opsera-ansible-service:kube-dev-${date_tag}

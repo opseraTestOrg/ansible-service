@@ -1,7 +1,7 @@
 #!/bin/bash
 set -xe
 
-clusername=${1:-opsera-dev-cluster}
+clusername=${1:-opsera-prod-cluster}
 servicename=${2:-opsera-ansible-service }
 
 mkdir -p  ${PWD}/.tmp/kube-vol
