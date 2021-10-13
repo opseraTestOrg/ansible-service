@@ -2,7 +2,7 @@
 set -xe
 
 clusername=${1:-opsera-dev-cluster}
-servicename=${2:-opsera-ansible-integrator }
+servicename=${2:-opsera-ansible-service }
 
 mkdir -p  ${PWD}/.tmp/kube-vol
 
