@@ -12,6 +12,7 @@ import com.opsera.ansible.client.util.AnsibleClient;
 import com.opsera.ansible.config.IServiceFactory;
 import com.opsera.ansible.dto.AnsibleConnectionClientRequest;
 import com.opsera.ansible.exception.AnsibleServiceException;
+import com.opsera.ansible.resources.AnsibleClientConstants;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
 import com.opsera.ansible.ssh.SshClientConfig;
 import com.opsera.ansible.ssh.pool.SshClientsPool;
@@ -39,10 +40,10 @@ public class ClientUtility {
         AnsibleClient ansibleClient = null;
 
         LOGGER.info(AnsibleServiceConstants.CREATE_NEW_ANSIBLE_CLIENT_USING_ANSIBLE_CLIENT_REQUEST_INFO, ansibleClientRequest.getHostName(), ansibleClientRequest.getUserName(),
-                ansibleClientRequest.getPort(), ansibleClientRequest.getPubKeyPath());
+                ansibleClientRequest.getPort());
         try {
             ansibleClient = new AnsibleClient(new SshClientConfig(ansibleClientRequest.getHostName(), ansibleClientRequest.getPort(), ansibleClientRequest.getUserName(),
-                    ansibleClientRequest.getPassword(), ansibleClientRequest.getPubKeyPath()), pool);
+                    ansibleClientRequest.getPassword(),AnsibleClientConstants.PUB_KEY), pool);
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_CREATING_ANSIBLE_CLIENT, serviceFactory.gson().toJson(ansibleClientRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_CREATING_ANSIBLE_CLIENT + ex.getMessage());

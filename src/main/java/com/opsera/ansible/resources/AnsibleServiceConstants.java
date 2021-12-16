@@ -33,6 +33,7 @@ public class AnsibleServiceConstants {
     public static final String QUERY_PARAM_CUSTOMER_ID = "customerId";
     public static final String QUERY_PARAM_TOOL_ID = "toolId";
     public static final String V2_REGISTRY_TOOL_END_POINT = "/v2/registry/tool";
+    public static final String VAULT_READ_ENDPOINT = "/read";
 
     /**
      * Info-messages are used in the Ansible execution process.
