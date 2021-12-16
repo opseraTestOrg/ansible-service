@@ -192,7 +192,8 @@ public class SshClientSSHJ implements SshClient {
                 try {
                         logger.debug("auth with key:"+this.clientConfig.getUsername()+","+this.clientConfig.getPrivateKeyPath());
                         if (this.clientConfig.getPrivateKeyPath() != null) {
-                                KeyProvider keys = client.loadKeys(this.clientConfig.getPrivateKeyPath());
+                            KeyProvider keys =  client.loadKeys(this.clientConfig.getPrivateKeyPath(), null, null);
+//                                KeyProvider keys = client.loadKeys(this.clientConfig.getPrivateKeyPath());
                                 client.authPublickey(this.clientConfig.getUsername(), keys);
                         } else {
                                 client.authPublickey(this.clientConfig.getUsername());
