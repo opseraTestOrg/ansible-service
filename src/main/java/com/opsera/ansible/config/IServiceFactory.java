@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.opsera.ansible.service.CommandService;
+import com.opsera.ansible.service.VaultHelper;
 
 /**
  * @author sreeni
@@ -24,5 +25,8 @@ public interface IServiceFactory {
     public RestTemplate getRestTemplate();
 
     public CommandService getCommandService();
+    
+
+    public VaultHelper getVaultHelper();
 
 }

@@ -16,4 +16,5 @@ public class ToolsConfigDetails {
     private String port;
     private String pubKeyPath;
     private String userName;
+    private VaultConfig  publicKey;
 }
