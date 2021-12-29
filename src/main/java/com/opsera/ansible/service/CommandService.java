@@ -4,6 +4,7 @@
 package com.opsera.ansible.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import com.opsera.ansible.dto.AnsiblePlayBookResponseDto;
 import com.opsera.ansible.dto.AnsiblePlaybookServerRequestDto;
 import com.opsera.ansible.dto.ToolsConfigDetails;
 import com.opsera.ansible.dto.ToolsConfigurations;
+import com.opsera.ansible.dto.VaultConfig;
 import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.kafka.KafkaTopics;
 import com.opsera.ansible.resources.AnsibleKafkaConstants;
@@ -426,6 +428,7 @@ public class CommandService {
             ToolsConfigurations toolsConfigurations = toolConfigurationService.getToolConfigurationDetails(toolConfigId, customerId);
             if (toolsConfigurations != null) {
                 ToolsConfigDetails toolsConfigDetails = toolsConfigurations.getConfiguration();
+                VaultConfig valutConfig = toolsConfigDetails.getPublicKey();
                 AnsibleConnectionClientRequest ansibleClientRequest = new AnsibleConnectionClientRequest();
                 ansibleClientRequest.setHostName(toolsConfigDetails.getHostName());
                 try {
@@ -433,7 +436,8 @@ public class CommandService {
                 } catch (NumberFormatException e) {
                     ansibleClientRequest.setPort(0);
                 }
-                ansibleClientRequest.setPubKeyPath(toolsConfigDetails.getPubKeyPath());
+                Map<String, String> secrets = serviceFactory.getVaultHelper().getSecrets(toolsConfigurations.getOwner(), Arrays.asList(valutConfig.getVaultKey()));
+                ansibleClientRequest.setPubKeyPath(secrets.get(valutConfig.getVaultKey()));
                 ansibleClientRequest.setUserName(toolsConfigDetails.getUserName());
                 ansiblePlayBookRequest.setAnsibleClientRequest(ansibleClientRequest);
             }

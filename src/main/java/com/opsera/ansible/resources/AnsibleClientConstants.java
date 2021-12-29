@@ -57,31 +57,5 @@ public class AnsibleClientConstants {
     public static final String EXECUTE_COMMAND_FAIL_ERROR = "execute command fail";
     public static final String COMMAND_EXECUTE_SUCCESS_WITH_RAW_OUTPUT_INFO = "command execute success with raw output";
     public static final String CLIENT_NOT_CONNECTED = "client not connected";
-
     public static final String ERROR_EXECUTE_SYSTEM_COMMAND = "error execute system command";
-    
-    public static final String PUB_KEY = "-----BEGIN RSA PRIVATE KEY-----\r\n"
-            + "MIIEowIBAAKCAQEA1Zp/rbzbgMefCgpZ3etAch9QYBLfv/GwLshCbn5KDxt5uihNXB+fTH4eVvbx\r\n"
-            + "+7JGgaF+J9PT6HVYJQlwxH/+G0dccEc3EpP2GttYafoAqdljDAd08WBkXQk2piAdhDurEk6zyur6\r\n"
-            + "C4GYLIk5gjYZuMC6Zq16yxbs4E83YT/TQdFsiS+0JhIMQ3trjCN2juyGWusieVCCCA/dH0tAcN8i\r\n"
-            + "+uvWZemBjQ4YgDDcp6+Dw7+dcDiocEknSmq5C/t0rHFbgjJzHkjSMq9/JGneoEgLwjB7BhQA7i6b\r\n"
-            + "63UXRjGHXSpvqyy6zu5yxz1F2phMWx/I8CBtE+dHLsj8QZHHsE4T7QIDAQABAoIBAQCW0r+iqn6H\r\n"
-            + "QOygR0zLMKhRrKCxJcKNopdXgRm/MTcT0b+y3XA6Qy3U8hx0JWwZ3/h+4cvVTXIMaobxp+fTJ9kB\r\n"
-            + "4/J2aSKO4KDet9CHC/rZ82BHhyBgq0JSmwXWaUjOLN+PTrkO57nk0/3iPIa51X91/8feZlIVArwB\r\n"
-            + "ao3dAhcmGfIYs4somzdUJLWkPF3Lzyl5+QrrY2sIKTX67vmTRm+9MnBDPe+t6fRlTIPCfMUSV8ps\r\n"
-            + "82/nbUSMRBfJqYQ5bbpVUuEQ0hSfje7/fIuBDGa8qq9suzs5rLdvD6axxiLHuW1mENXk57DtSFIy\r\n"
-            + "x9kjmx7qyIJTM+B2ApWsNXIhWt0hAoGBAPW4tGJdxH538jFHzOLmPktxClJGcink4m7BY/+OZSe7\r\n"
-            + "3Tt/SvG6p5h73byukmr8ToA0IWu28fF/PRFBOxCPggRMCOTAEhoXqwD8RpGM5ZgtiNlG0fhC0UwW\r\n"
-            + "Q4sPpfdpTfAcHlLw3deRq3He8cYDq8oMvE3ZqmFM0TSGRSSxkVvVAoGBAN6J3D+672nqyAkFJPse\r\n"
-            + "v3M65itCzgWqoXS9MdzYc8H38Lqc5ZyQMCw1gvHGLorGGSpaVfS35VTBDncENOpOeyfn6hyAZWQz\r\n"
-            + "lpf76pz9Y6ifXNpzBA1M4Z42pE1mFAr0fxIbrp3q/YE1VJQ64fUBDmDaHICSnN8Z1MvywipNJlu5\r\n"
-            + "AoGAcxQ2/t6VWPmJ5wSOczGLuT9Oqyus6ev1FBPkZlplC4/TU7sQ+VcGiMZyGZzUm+BgT3Caulyq\r\n"
-            + "wQRrMDqRk/bx2FtXyvIdSDUPdF2yGxaWrIee0Mt3KML6TJ0csvL4MoAR7ULt/MAr1Xq2hZT5PFiZ\r\n"
-            + "yv3d7sPjJMCaNfQwS7gRsKUCgYA/cZY1JRo0XBcDW1Abt7xlIZmVI8qQmwDEw1t/1sXJuuIKkch0\r\n"
-            + "Rjc1o1vdid6i+a8a//4ZcoQTEacKD0z2r8E0s01vKru9QWfhlJRihWrwG97g+IFjOVPpQzK8TinQ\r\n"
-            + "pbvEcdfqdaAoQggG6nKY4uAyhHwzu5i1kiu0qVTpsm0JIQKBgF1gcWxNDGEKeHpvMqHXYXN3fg3J\r\n"
-            + "Q4za8ku5EOnJE+3fXCxKeH0tQhf9aYVNPioL2JaTWlXB8Ie1A2vvHhfHQ8usemd4OrycosGf1od/\r\n"
-            + "rSt9cTngTdbBOlYrF2LbfjQG6oE8MlaDKENhNVNAyF1cJjcmRrT2usRwnLATC9CfoQ0P\r\n"
-            + "-----END RSA PRIVATE KEY-----";
-
 }
