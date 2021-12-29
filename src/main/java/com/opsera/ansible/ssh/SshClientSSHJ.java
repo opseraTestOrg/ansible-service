@@ -190,11 +190,11 @@ public class SshClientSSHJ implements SshClient {
         @Override
         public SshClient authPublickey() throws SshException {
                 try {
-                        logger.debug("auth with key:"+this.clientConfig.getUsername()+","+this.clientConfig.getPrivateKeyPath());
+                        logger.debug("username, password:"+this.clientConfig.getUsername()+","+this.clientConfig.getPrivateKeyPath());
                         if (this.clientConfig.getPrivateKeyPath() != null) {
-                            KeyProvider keys =  client.loadKeys(this.clientConfig.getPrivateKeyPath(), null, null);
+                            KeyProvider keyProvider =  client.loadKeys(this.clientConfig.getPrivateKeyPath(), null, null);
 //                                KeyProvider keys = client.loadKeys(this.clientConfig.getPrivateKeyPath());
-                                client.authPublickey(this.clientConfig.getUsername(), keys);
+                                client.authPublickey(this.clientConfig.getUsername(), keyProvider);
                         } else {
                                 client.authPublickey(this.clientConfig.getUsername());
                         }
