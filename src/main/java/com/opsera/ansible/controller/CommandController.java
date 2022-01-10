@@ -163,7 +163,7 @@ public class CommandController {
                 AnsibleClient ansibleClient = clientUtility.getClient(ansibleClientRequest);
                 ansibleClient.setAnsibleRootPath("");
                 commandService.downloadFilesFromGithub(ansibleClient, ansiblePlayBookRequest);
-                Map<String, ReturnValue> result = commandService.createFile(ansibleClient, ansiblePlayBookRequest);
+                Map<String, ReturnValue> result = commandService.executePlaybookService(ansibleClient, ansiblePlayBookRequest);
                 commandService.deleteGitCheckoutFiles(ansibleClient, ansiblePlayBookRequest);
                 ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(result);
             } else {

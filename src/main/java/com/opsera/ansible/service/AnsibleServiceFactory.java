@@ -8,7 +8,7 @@ import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
 import com.opsera.ansible.service.impl.DeleteCheckoutFolderServiceImpl;
 import com.opsera.ansible.service.impl.DownloadGitServiceImpl;
-import com.opsera.ansible.service.impl.FileCreationServiceImpl;
+import com.opsera.ansible.service.impl.GenericPlaybookServiceImpl;
 
 /**
  * @author sreeni
@@ -20,7 +20,7 @@ public class AnsibleServiceFactory {
     public static final Logger LOGGER = LoggerFactory.getLogger(AnsibleServiceFactory.class);
 
     public enum AnsibleServiceType {
-        FileCreation, DownloadFromGit, DeleteGitCheckoutFolder
+         DownloadFromGit, DeleteGitCheckoutFolder, ExecutePlaybook
     }
 
     /**
@@ -29,18 +29,16 @@ public class AnsibleServiceFactory {
      */
     public AnsibleService getAnsibleService(AnsibleServiceType serviceType) {
         try {
-            if (serviceType == AnsibleServiceType.FileCreation) {
-                return new FileCreationServiceImpl();
-            } else if (serviceType == AnsibleServiceType.DownloadFromGit) {
+            if (serviceType == AnsibleServiceType.DownloadFromGit) {
                 return new DownloadGitServiceImpl();
             } else if (serviceType == AnsibleServiceType.DeleteGitCheckoutFolder) {
                 return new DeleteCheckoutFolderServiceImpl();
+            }else {
+                return new GenericPlaybookServiceImpl();
             }
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_GETTING_ANSIBLE_SERVICE_IMPL, serviceType);
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_GETTING_ANSIBLE_SERVICE_IMPL + ex.getMessage());
         }
-        return null;
     }
-
 }

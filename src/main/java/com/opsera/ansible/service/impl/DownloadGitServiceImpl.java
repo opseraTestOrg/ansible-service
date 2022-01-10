@@ -27,7 +27,7 @@ public class DownloadGitServiceImpl implements AnsibleService {
     @Autowired
     private IServiceFactory serviceFactory;
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(FileCreationServiceImpl.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(DownloadGitServiceImpl.class);
 
     /**
      * This method used to create an AnsiblePlaybookServerRequestDto for

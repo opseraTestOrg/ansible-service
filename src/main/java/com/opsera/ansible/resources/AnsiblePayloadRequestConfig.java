@@ -20,9 +20,9 @@ public class AnsiblePayloadRequestConfig {
     private int runCount;
     private String action;
     private String toolConfigId;
-    private Map<String, String> commandArgs;
+//    private Map<String, String> commandArgs;
     private String gitFileLocation;
     private String gitFileName;
-    private String serviceType;
+//    private String serviceType;
 
 }
