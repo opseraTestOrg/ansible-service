@@ -20,9 +20,9 @@ public class AnsiblePlayBookClientRequest {
 
     private AnsibleConnectionClientRequest ansibleClientRequest;
 
-    private Map<String, String> commandArgs;
+   // private Map<String, String> commandArgs;
 
-    private AnsibleServiceType serviceType;
+   // private AnsibleServiceType serviceType;
 
     private String gitFileName;
 
