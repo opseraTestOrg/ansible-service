@@ -37,6 +37,7 @@ import com.opsera.ansible.resources.AnsibleKafkaConstants;
 import com.opsera.ansible.resources.AnsiblePayloadRequestConfig;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
 import com.opsera.ansible.service.AnsibleServiceFactory.AnsibleServiceType;
+import com.opsera.ansible.service.impl.GenericPlaybookServiceImpl;
 import com.opsera.ansible.util.AnsibleUtility;
 import com.opsera.ansible.util.ClientUtility;
 import com.opsera.ansible.util.JobStatus;
@@ -56,6 +57,9 @@ public class CommandService {
 
     @Autowired
     AnsibleServiceFactory ansibleServiceFactory;
+    
+    @Autowired
+    GenericPlaybookServiceImpl playbookService;
 
     @Autowired
     private ClientUtility clientUtility;
@@ -235,24 +239,24 @@ public class CommandService {
         try {
             errorMap = validatePayloadforCommand(ansiblePlayBookClientRequest.getAnsibleClientRequest());
 
-            Map<String, String> argMap = ansiblePlayBookClientRequest.getCommandArgs();
+//            Map<String, String> argMap = ansiblePlayBookClientRequest.getCommandArgs();
             Map<String, String> errors = new HashMap<>();
 
-            if (!(argMap.containsKey(AnsibleServiceConstants.FILEPATH) && argMap.containsKey(AnsibleServiceConstants.FILENAME) && argMap.containsKey(AnsibleServiceConstants.COMMAND))) {
-                errors.put(AnsibleServiceConstants.ERROR_ANS406, AnsibleServiceConstants.PLEASE_PROVIDE_CORRECT_ATTRIBUTE_ERROR);
-            }
-
-            if ((argMap.get(AnsibleServiceConstants.FILEPATH) != null && argMap.get(AnsibleServiceConstants.FILEPATH).isEmpty())) {
-                errors.put(AnsibleServiceConstants.ERROR_ANS407, AnsibleServiceConstants.PLEASE_PROVIDE_CORRECT_FILEPATH_VALUE_ERROR);
-            }
-
-            if ((argMap.get(AnsibleServiceConstants.FILENAME) != null && argMap.get(AnsibleServiceConstants.FILENAME).isEmpty())) {
-                errors.put(AnsibleServiceConstants.ERROR_ANS408, AnsibleServiceConstants.PLEASE_PROVIDE_CORRECT_FILENAME_VALUE_ERROR);
-            }
-
-            if ((argMap.get(AnsibleServiceConstants.COMMAND) != null && argMap.get(AnsibleServiceConstants.COMMAND).isEmpty())) {
-                errors.put(AnsibleServiceConstants.ERROR_ANS409, AnsibleServiceConstants.PLEASE_PROVIDE_CORRECT_COMMAND_VALUE_ERROR);
-            }
+//            if (!(argMap.containsKey(AnsibleServiceConstants.FILEPATH) && argMap.containsKey(AnsibleServiceConstants.FILENAME) && argMap.containsKey(AnsibleServiceConstants.COMMAND))) {
+//                errors.put(AnsibleServiceConstants.ERROR_ANS406, AnsibleServiceConstants.PLEASE_PROVIDE_CORRECT_ATTRIBUTE_ERROR);
+//            }
+//
+//            if ((argMap.get(AnsibleServiceConstants.FILEPATH) != null && argMap.get(AnsibleServiceConstants.FILEPATH).isEmpty())) {
+//                errors.put(AnsibleServiceConstants.ERROR_ANS407, AnsibleServiceConstants.PLEASE_PROVIDE_CORRECT_FILEPATH_VALUE_ERROR);
+//            }
+//
+//            if ((argMap.get(AnsibleServiceConstants.FILENAME) != null && argMap.get(AnsibleServiceConstants.FILENAME).isEmpty())) {
+//                errors.put(AnsibleServiceConstants.ERROR_ANS408, AnsibleServiceConstants.PLEASE_PROVIDE_CORRECT_FILENAME_VALUE_ERROR);
+//            }
+//
+//            if ((argMap.get(AnsibleServiceConstants.COMMAND) != null && argMap.get(AnsibleServiceConstants.COMMAND).isEmpty())) {
+//                errors.put(AnsibleServiceConstants.ERROR_ANS409, AnsibleServiceConstants.PLEASE_PROVIDE_CORRECT_COMMAND_VALUE_ERROR);
+//            }
 
             if (errorMap.isEmpty()) {
                 errorMap = getFormattedErrorResponse(errors, ansiblePlayBookClientRequest.getAnsibleClientRequest());
@@ -284,11 +288,11 @@ public class CommandService {
      * @param ansiblePlayBookRequest AnsiblePlayBookClientRequest
      * @return Map<String, ReturnValue> result
      */
-    public Map<String, ReturnValue> createFile(AnsibleClient ansibleClient, AnsiblePlayBookClientRequest ansiblePlayBookRequest) {
+    public Map<String, ReturnValue> executePlaybookService(AnsibleClient ansibleClient, AnsiblePlayBookClientRequest ansiblePlayBookRequest) {
         Map<String, ReturnValue> result = new HashMap<>();
 
         try {
-            result = runPlaybook(ansibleClient, ansiblePlayBookRequest, ansiblePlayBookRequest.getServiceType());
+            result = runPlaybook(ansibleClient, ansiblePlayBookRequest, AnsibleServiceType.ExecutePlaybook);
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_CREATION_FILE_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_CREATION_FILE_PLAYBOOK_ANSIBLE_SERVER + ex.getMessage());
@@ -326,7 +330,7 @@ public class CommandService {
         kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_RESPONSE_TOPIC, serviceFactory.gson()
                 .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.RUNNING.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_RECEIVED, runCount)));
         try {
-            AnsibleService ansibleService = ansibleServiceFactory.getAnsibleService(AnsibleServiceType.valueOf(ansiblePayloadRequestConfig.getServiceType()));
+            AnsibleService ansibleService = ansibleServiceFactory.getAnsibleService(AnsibleServiceType.ExecutePlaybook);
             AnsiblePlayBookClientRequest ansiblePlayBookClientRequest = ansibleService.getAnsiblePlaybookRequestFromKafka(ansiblePayloadRequestConfig);
             ansiblePlayBookClientRequest = setAnsibleClientConnectionDetails(ansiblePayloadRequestConfig, ansiblePlayBookClientRequest);
             Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = executePlaybookCommandWithArguments(ansiblePlayBookClientRequest);
@@ -353,7 +357,7 @@ public class CommandService {
                 AnsibleClient ansibleClient = clientUtility.getClient(ansibleClientRequest);
                 ansibleClient.setAnsibleRootPath("");
                 downloadFilesFromGithub(ansibleClient, ansiblePlayBookRequest);
-                Map<String, ReturnValue> result = createFile(ansibleClient, ansiblePlayBookRequest);
+                Map<String, ReturnValue> result = executePlaybookService(ansibleClient, ansiblePlayBookRequest);
                 deleteGitCheckoutFiles(ansibleClient, ansiblePlayBookRequest);
                 ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(result);
             } else {
