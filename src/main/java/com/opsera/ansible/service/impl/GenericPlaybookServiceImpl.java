@@ -60,7 +60,7 @@ public class GenericPlaybookServiceImpl implements AnsibleService {
                  */
             }
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTING_FILE_CREATION_SERVICE_IMPL_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTING_FILE_CREATION_SERVICE_IMPL_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_FILE_CREATION_SERVICE_IMPL_ERROR + ex.getMessage());
         }
 
