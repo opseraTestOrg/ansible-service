@@ -97,7 +97,7 @@ public class CommandController {
                 ;
             }
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTING_PING_COMMAND_THROUGH_ANSIBLE_CLIENT_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTING_PING_COMMAND_THROUGH_ANSIBLE_CLIENT_MSG_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_PING_COMMAND_THROUGH_ANSIBLE_CLIENT_ERROR + ex.getMessage());
         } finally {
             stopwatch.stop();
@@ -131,7 +131,7 @@ public class CommandController {
             ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(result);
             LOGGER.info(AnsibleServiceConstants.COMPLETED_TO_EXECUTE_PLAYBOOK_IN_ANSIBLE_SERVER_SUCESSFULLY_INFO);
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_THROUGH_ANSIBLE_CLIENT_ERROR, serviceFactory.gson().toJson(ansibleClientRequest), playBookPath);
+            LOGGER.error(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_THROUGH_ANSIBLE_CLIENT_MSG_ERROR, serviceFactory.gson().toJson(ansibleClientRequest), playBookPath);
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_THROUGH_ANSIBLE_CLIENT_ERROR + ex.getMessage());
         } finally {
             stopwatch.stop();
@@ -171,7 +171,7 @@ public class CommandController {
             }
             LOGGER.info(AnsibleServiceConstants.COMPLETED_TO_EXECUTE_PLAYBOOK_IN_ANSIBLE_SERVER_SUCESSFULLY_INFO);
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_WITH_ARGS_THROUGH_ANSIBLE_CLIENT_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_WITH_ARGS_THROUGH_ANSIBLE_CLIENT_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_WITH_ARGS_THROUGH_ANSIBLE_CLIENT_ERROR + ex.getMessage());
         } finally {
             stopwatch.stop();

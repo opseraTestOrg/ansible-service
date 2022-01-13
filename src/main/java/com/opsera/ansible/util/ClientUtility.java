@@ -39,16 +39,15 @@ public class ClientUtility {
     public AnsibleClient getClient(AnsibleConnectionClientRequest ansibleClientRequest) {
         AnsibleClient ansibleClient = null;
 
-        LOGGER.info(AnsibleServiceConstants.CREATE_NEW_ANSIBLE_CLIENT_USING_ANSIBLE_CLIENT_REQUEST_INFO, ansibleClientRequest.getHostName(), ansibleClientRequest.getUserName(),
-                ansibleClientRequest.getPort());
+        LOGGER.info(AnsibleServiceConstants.CREATE_NEW_ANSIBLE_CLIENT_USING_ANSIBLE_CLIENT_REQUEST_INFO, serviceFactory.gson().toJson(ansibleClientRequest));
         //ansibleClientRequest.getPubKeyPath())
         //AnsibleClientConstants.PUB_KEY
         try {
             ansibleClient = new AnsibleClient(new SshClientConfig(ansibleClientRequest.getHostName(), ansibleClientRequest.getPort(), ansibleClientRequest.getUserName(),
                     ansibleClientRequest.getPassword(),ansibleClientRequest.getPubKeyPath()), pool);
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_CREATING_ANSIBLE_CLIENT, serviceFactory.gson().toJson(ansibleClientRequest));
-            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_CREATING_ANSIBLE_CLIENT + ex.getMessage());
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_CREATING_ANSIBLE_CLIENT_MSG_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
+            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_CREATING_ANSIBLE_CLIENT_ERROR + ex.getMessage());
 
         }
         LOGGER.info(AnsibleServiceConstants.COMPLETED_TO_CREATE_NEW_ANSIBLE_CLIENT_USING_ANSIBLE_CLIENT_REQUEST_INFO);

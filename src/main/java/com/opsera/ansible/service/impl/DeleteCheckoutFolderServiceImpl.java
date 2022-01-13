@@ -50,7 +50,7 @@ public class DeleteCheckoutFolderServiceImpl implements AnsibleService {
                 ansibleFileCreationRequestDto.setCommandArgs(options);
             }
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTING_DELETE_CHECKOUT_SERVICE_IMPL_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTING_DELETE_CHECKOUT_SERVICE_IMPL_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_DELETE_CHECKOUT_SERVICE_IMPL_ERROR + ex.getMessage());
         }
 

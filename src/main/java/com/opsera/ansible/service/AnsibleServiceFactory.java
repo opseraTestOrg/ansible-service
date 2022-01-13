@@ -37,8 +37,8 @@ public class AnsibleServiceFactory {
                 return new GenericPlaybookServiceImpl();
             }
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_GETTING_ANSIBLE_SERVICE_IMPL, serviceType);
-            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_GETTING_ANSIBLE_SERVICE_IMPL + ex.getMessage());
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_GETTING_ANSIBLE_SERVICE_IMPL_MSG_ERROR, serviceType);
+            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_GETTING_ANSIBLE_SERVICE_IMPL_ERROR + ex.getMessage());
         }
     }
 }
