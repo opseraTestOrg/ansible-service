@@ -51,7 +51,7 @@ public class DownloadGitServiceImpl implements AnsibleService {
                 ansiblePlaybookServerRequestDto.setCommandArgs(options);
             }
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTING_DOWNLOAD_GIT_CHECKOUT_SERVICE_IMPL_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTING_DOWNLOAD_GIT_CHECKOUT_SERVICE_IMPL_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_DOWNLOAD_GIT_CHECKOUT_SERVICE_IMPL_ERROR + ex.getMessage());
         }
 

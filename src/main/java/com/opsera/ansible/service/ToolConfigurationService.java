@@ -49,8 +49,8 @@ public class ToolConfigurationService {
                     .queryParam(AnsibleServiceConstants.QUERY_PARAM_TOOL_ID, toolConfigId).queryParam(AnsibleServiceConstants.QUERY_PARAM_CUSTOMER_ID, customerId);
             configurations = restTemplate.getForObject(uriBuilder.toUriString(), ToolsConfigurations.class);
         } catch (RestClientException ex) {
-            LOGGER.error(AnsibleServiceConstants.ERROR_WHILE_RETRIVING_TOOL_CONFIG_DETAILS_FROM_ENDPOINT, toolConfigId, customerId);
-            throw new AnsibleServiceException(AnsibleServiceConstants.ERROR_WHILE_RETRIVING_TOOL_CONFIG_DETAILS_FROM_ENDPOINT + ex.getMessage());
+            LOGGER.error(AnsibleServiceConstants.ERROR_WHILE_RETRIVING_TOOL_CONFIG_DETAILS_FROM_ENDPOINT_MSG_ERROR, toolConfigId, customerId);
+            throw new AnsibleServiceException(AnsibleServiceConstants.ERROR_WHILE_RETRIVING_TOOL_CONFIG_DETAILS_FROM_ENDPOINT_ERROR + ex.getMessage());
         }
         return configurations;
     }

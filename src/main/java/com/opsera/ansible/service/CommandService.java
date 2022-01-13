@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
+import com.google.gson.stream.JsonWriter;
 import com.opsera.ansible.client.command.PlaybookCommand;
 import com.opsera.ansible.client.util.AnsibleClient;
 import com.opsera.ansible.client.util.ReturnValue;
@@ -109,7 +110,7 @@ public class CommandService {
             }
             return getFormattedErrorResponse(errors, ansibleClientRequest);
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_INPUT_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_INPUT_MSG_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_INPUT_ERROR + ex.getMessage());
         }
     }
@@ -167,7 +168,7 @@ public class CommandService {
 
             return ansibleCustomResponse;
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_PING_RESPONSE_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_PING_RESPONSE_MSG_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_PING_RESPONSE_ERROR + ex.getMessage());
         }
     }
@@ -195,7 +196,7 @@ public class CommandService {
 
             }
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_FORMATTING_CUSTOM_PING_FAILURE_RESPONSE_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_FORMATTING_CUSTOM_PING_FAILURE_RESPONSE_MSG_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_FORMATTING_CUSTOM_PING_FAILURE_RESPONSE_ERROR + ex.getMessage());
         }
         return errorMap;
@@ -224,7 +225,7 @@ public class CommandService {
 
             }
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_FORMATTING_RESPONSE_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_FORMATTING_RESPONSE_MSG_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_FORMATTING_RESPONSE_ERROR + ex.getMessage());
         }
         return errorMap;
@@ -263,7 +264,7 @@ public class CommandService {
             }
 
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_FILE_CREATION_PAYLOAD_INPUT_ERROR, serviceFactory.gson().toJson(ansiblePlayBookClientRequest));
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_FILE_CREATION_PAYLOAD_INPUT_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookClientRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_VALIDATING_FILE_CREATION_PAYLOAD_INPUT_ERROR + ex.getMessage());
         }
         return errorMap;
@@ -278,8 +279,8 @@ public class CommandService {
         try {
             runPlaybook(ansibleClient, ansiblePlayBookRequest, AnsibleServiceType.DownloadFromGit);
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DOWNLOAD_GITHUB_FOLDER_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest));
-            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DOWNLOAD_GITHUB_FOLDER_PLAYBOOK_ANSIBLE_SERVER + ex.getMessage());
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DOWNLOAD_GITHUB_FOLDER_PLAYBOOK_ANSIBLE_SERVER_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
+            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DOWNLOAD_GITHUB_FOLDER_PLAYBOOK_ANSIBLE_SERVER_ERROR + ex.getMessage());
         }
     }
 
@@ -294,8 +295,8 @@ public class CommandService {
         try {
             result = runPlaybook(ansibleClient, ansiblePlayBookRequest, AnsibleServiceType.ExecutePlaybook);
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_CREATION_FILE_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest));
-            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_CREATION_FILE_PLAYBOOK_ANSIBLE_SERVER + ex.getMessage());
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_PLAYBOOK_SERVICE_ANSIBLE_SERVER_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
+            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_PLAYBOOK_SERVICE_ANSIBLE_SERVER_ERROR + ex.getMessage());
         }
 
         return result;
@@ -311,8 +312,8 @@ public class CommandService {
         try {
             runPlaybook(ansibleClient, ansiblePlayBookRequest, AnsibleServiceType.DeleteGitCheckoutFolder);
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DELETE_CHECKOUT_FOLDER_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest));
-            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DELETE_CHECKOUT_FOLDER_PLAYBOOK_ANSIBLE_SERVER + ex.getMessage());
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DELETE_CHECKOUT_FOLDER_PLAYBOOK_ANSIBLE_SERVER_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
+            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_DELETE_CHECKOUT_FOLDER_PLAYBOOK_ANSIBLE_SERVER_ERROR + ex.getMessage());
         }
 
     }
@@ -334,11 +335,19 @@ public class CommandService {
             AnsiblePlayBookClientRequest ansiblePlayBookClientRequest = ansibleService.getAnsiblePlaybookRequestFromKafka(ansiblePayloadRequestConfig);
             ansiblePlayBookClientRequest = setAnsibleClientConnectionDetails(ansiblePayloadRequestConfig, ansiblePlayBookClientRequest);
             Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = executePlaybookCommandWithArguments(ansiblePlayBookClientRequest);
-            Map<String, JobStatus> jobStatus = ansibleService.getAnsibleJobStatus(ansiblecustomResponse);
+            Map<String, JobStatus> jobStatus = ansibleService.getAnsibleJobStatus(ansiblecustomResponse);            
+            LOGGER.info(AnsibleServiceConstants.EXECUTING_BEFORE_PUSHING_LOG_KAFKA_INFO, serviceFactory.gson().toJson(ansiblePayloadRequestConfig),serviceFactory.gson().toJson(jobStatus));
             postStatustoKafka(ansiblePayloadRequestConfig, jobStatus, ansiblecustomResponse);
+            LOGGER.info(AnsibleServiceConstants.EXECUTING_AFTER_PUSHING_LOG_KAFKA_INFO, serviceFactory.gson().toJson(ansiblePayloadRequestConfig),serviceFactory.gson().toJson(jobStatus));
+            
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.ERROR_WHILE_EXECUTING_PLAYBOOK_FROM_KAFKA, serviceFactory.gson().toJson(ansiblePayloadRequestConfig));
-            throw new AnsibleServiceException(AnsibleServiceConstants.ERROR_WHILE_EXECUTING_PLAYBOOK_FROM_KAFKA + ex.getMessage());
+            LOGGER.error(AnsibleServiceConstants.ERROR_WHILE_EXECUTING_PLAYBOOK_FROM_KAFKA ,ex.getMessage() , serviceFactory.gson().toJson(ansiblePayloadRequestConfig));
+            
+            kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_STATUS_TOPIC, serviceFactory.gson()
+                    .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE, runCount)));
+
+            kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson()
+                    .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE + ex.getMessage() , runCount)));
         }
     }
 
@@ -391,8 +400,8 @@ public class CommandService {
                     ansiblePlaybookServerRequestDto.getServerPlaybookPath(), ansiblePlaybookServerRequestDto.getCommandArgs()), AnsibleServiceConstants.TIMEOUT_SERVER);
 
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_PLAYBOOK_ANSIBLE_SERVER, serviceFactory.gson().toJson(ansiblePlayBookRequest), ansibleServiceType);
-            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_PLAYBOOK_ANSIBLE_SERVER + ex.getMessage());
+            LOGGER.error(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_PLAYBOOK_ANSIBLE_SERVER_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest), ansibleServiceType);
+            throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTION_FAILED_WHILE_EXECUTING_PLAYBOOK_ANSIBLE_SERVER_ERROR + ex.getMessage());
         }
         return result;
     }
@@ -446,8 +455,8 @@ public class CommandService {
                 ansiblePlayBookRequest.setAnsibleClientRequest(ansibleClientRequest);
             }
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.ERROR_WHILE_SETTING_TOOL_CONFIG_DETAILS_FOR_ANSIBLE_CLIENT, serviceFactory.gson().toJson(ansiblePayloadRequestConfig));
-            throw new AnsibleServiceException(AnsibleServiceConstants.ERROR_WHILE_SETTING_TOOL_CONFIG_DETAILS_FOR_ANSIBLE_CLIENT + ex.getMessage());
+            LOGGER.error(AnsibleServiceConstants.ERROR_WHILE_SETTING_TOOL_CONFIG_DETAILS_FOR_ANSIBLE_CLIENT_MSG_ERROR, serviceFactory.gson().toJson(ansiblePayloadRequestConfig));
+            throw new AnsibleServiceException(AnsibleServiceConstants.ERROR_WHILE_SETTING_TOOL_CONFIG_DETAILS_FOR_ANSIBLE_CLIENT_ERROR + ex.getMessage());
         }
         return ansiblePlayBookRequest;
     }
