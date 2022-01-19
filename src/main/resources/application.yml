@@ -1,101 +1,73 @@
 logging:
-   file: ansibleService
-   path: /apps/OpsERA/logs/components/ansible-service
-
-   
+  file: 
+    name: ansibleService
+    path: /apps/OpsERA/logs/components/ansible-service
 hosted:
- zoneId: Z1TIQL15FE1S33
+  zoneId: Z1TIQL15FE1S33
 spring:
-   application:
+  application:
     name: ansible-service
     description: API interacting with ansible endpoints
-   servlet:
+  lifecycle:    timeout-per-shutdown-phase: 2h
+  servlet:
      multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
+       max-file-size: 100MB
+       max-request-size: 100MB
+  task:
+    execution:
+      pool:
+        core-size: 50
+        queue-capacity: 100 
+        max-size: 200
+      shutdown:
+        await-termination: true
+        await-termination-period: 2h
+      thread-name-prefix: AnsibleAsyncThread-
 server:
-   port: 9080
-eureka:
-  instance:
-    leaseRenewalIntervalInSeconds: 1800
-    leaseExpirationDurationInSeconds: 3600
-
----
-
-spring:
-   profiles: freetrial
-pipeline:
-  config:
-    baseurl: https://freetrial-microservice.opsera.io/api/pipeline
-vault:
-  config:
-    baseurl: https://freetrial-microservice.opsera.io/api/vault
-customer:
-  config:
-    baseurl: https://freetrial-microservice.opsera.io/api/customer/
-kafka:
-  config:
-    baseurl: https://apigateway.opsera-test-private.opsera.io/api/kafka
-  consumer:
-    bootstrapServer: 10.0.2.156:9092,10.0.2.235:9092,10.0.2.234:9092
-    groupId: s3-log-pusher
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: https://freetrial-microservice.opsera.io:8761/eureka/
-amazonProperties:
-  accessKey: AKIAWNKXHD3I5DWIHL2E
-  secretKey: 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
-  
+  port: 9080
+  shutdown: graceful
 ---
 
 spring:
   profiles: kubernetes
 pipeline:
- config:
-  baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/pipeline
+  config:
+    baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/pipeline
 vault:
- config:
-  baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/vault
+  config:
+    baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/vault
 customer:
- config:
-  baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/customer/
+  config:
+    baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/customer/
 kafka:
- config:
+  config:
     baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/kafka
- consumer:
-  bootstrapServer: kafka.kafka.svc.cluster.local:9092
-  groupId: s3-log-pusher
-eureka:
- client:
-  serviceUrl:
-   defaultZone: http://opsera-service-discovery.microservices.svc.cluster.local:8761/eureka/
+  consumer:
+    bootstrapServer: kafka.kafka.svc.cluster.local:9092
+    groupId: s3-log-pusher
 amazonProperties:
   accessKey: AKIAWNKXHD3IUKQXB3FI
   secretKey: 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
+
 ---
 
 spring:
   profiles: local
 pipeline:
- config:
-  baseurl: https://apigateway.opsera-dev-private.opsera.io/api/pipeline
+  config:
+    baseurl: https://apigateway.opsera-dev-private.opsera.io/api/pipeline
 vault:
- config:
-  baseurl: https://apigateway.opsera-dev-private.opsera.io/api/vault
+  config:
+    baseurl: https://apigateway.opsera-dev-private.opsera.io/api/vault
 customer:
- config:
-  baseurl: https://apigateway.opsera-dev-private.opsera.io/api/customer/
+  config:
+    baseurl: https://apigateway.opsera-dev-private.opsera.io/api/customer/
 kafka:
- config:
+  config:
     baseurl: https://apigateway.opsera-dev-private.opsera.io/api/kafka
- consumer:
-  bootstrapServer: abfddd837c0914516aeff9f3ef667b10-866acafb6124ce47.elb.us-east-2.amazonaws.com:9094
-  groupId: s3-log-pusher
-eureka:
- client:
-  serviceUrl:
-   defaultZone: http://opsera-service-discovery.microservices.svc.cluster.local:8761/eureka/
+  consumer:
+    bootstrapServer: abfddd837c0914516aeff9f3ef667b10-866acafb6124ce47.elb.us-east-2.amazonaws.com:9094
+    groupId: s3-log-pusher
 amazonProperties:
   accessKey: AKIAWNKXHD3IUKQXB3FI
   secretKey: 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

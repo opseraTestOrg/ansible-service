@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.opsera.ansible.config.AppConfig;
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.dto.VaultData;
 import com.opsera.ansible.dto.VaultRequest;
 import com.opsera.ansible.exception.AnsibleServiceException;
@@ -31,7 +31,7 @@ public class VaultHelper {
     public static final Logger LOGGER = LoggerFactory.getLogger(VaultHelper.class);
 
     @Autowired
-    private IServiceFactory serviceFactory;
+    private ServiceFactory serviceFactory;
 
     @Autowired
     private AppConfig appConfig;

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.opsera.ansible.client.util.AnsibleClient;
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.dto.AnsibleConnectionClientRequest;
 import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
@@ -30,7 +30,7 @@ public class ClientUtility {
     SshClientsPool pool;
 
     @Autowired
-    private IServiceFactory serviceFactory;
+    private ServiceFactory serviceFactory;
 
     /**
      * @param ansibleClientRequest AnsibleClientRequest

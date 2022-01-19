@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StopWatch;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +24,7 @@ import com.opsera.ansible.client.command.PingCommand;
 import com.opsera.ansible.client.command.PlaybookCommand;
 import com.opsera.ansible.client.util.AnsibleClient;
 import com.opsera.ansible.client.util.ReturnValue;
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.dto.AnsibleConnectionClientRequest;
 import com.opsera.ansible.dto.AnsiblePlayBookClientRequest;
 import com.opsera.ansible.dto.AnsiblePlayBookResponseDto;
@@ -34,6 +34,7 @@ import com.opsera.ansible.service.AnsibleServiceFactory;
 import com.opsera.ansible.service.CommandService;
 import com.opsera.ansible.util.AnsibleUtility;
 import com.opsera.ansible.util.ClientUtility;
+import com.opsera.ansible.util.KafkaHelper;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,10 +54,7 @@ public class CommandController {
     private ClientUtility clientUtility;
 
     @Autowired
-    private StopWatch stopwatch;
-
-    @Autowired
-    private IServiceFactory serviceFactory;
+    private ServiceFactory serviceFactory;
 
     @Autowired
     private AnsibleUtility ansibleUtility;
@@ -66,6 +64,9 @@ public class CommandController {
 
     @Autowired
     AnsibleServiceFactory ansibleServiceFactory;
+    
+    @Autowired
+    KafkaHelper kafkaHelper;
 
     /**
      * This Api used test the connectivity to Ansible server using Ping Command
@@ -76,7 +77,6 @@ public class CommandController {
     @PostMapping(path = "/testConnection")
     @ApiOperation("Test Connectivity with Ansible server")
     public ResponseEntity<Map<String, AnsiblePlayBookResponseDto>> executePingCommand(@RequestBody AnsibleConnectionClientRequest ansibleClientRequest) {
-        stopwatch.start();
         Map<String, ReturnValue> result = new HashMap<String, ReturnValue>();
         Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<>();
         LOGGER.info(AnsibleServiceConstants.CREATE_NEW_ANSIBLE_CLIENT_IN_COMMAND_OPERATIONS_CONTROLLER_INFO);
@@ -94,18 +94,12 @@ public class CommandController {
 
             } else {
                 ansiblecustomResponse = ansibleUtility.getAnsibleCustomResponse(validateErrors);
-                ;
             }
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTING_PING_COMMAND_THROUGH_ANSIBLE_CLIENT_MSG_ERROR, serviceFactory.gson().toJson(ansibleClientRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_PING_COMMAND_THROUGH_ANSIBLE_CLIENT_ERROR + ex.getMessage());
-        } finally {
-            stopwatch.stop();
-            LOGGER.info(AnsibleServiceConstants.EXECUTING_PING_COMMAND_COMPLETED, stopwatch.getTotalTimeMillis());
         }
-
         return new ResponseEntity<>(ansiblecustomResponse, HttpStatus.OK);
-
     }
 
     /**
@@ -119,7 +113,6 @@ public class CommandController {
     @PostMapping(path = "/runAPlaybook")
     @ApiOperation("Run playbook in configured servers using playbook command")
     public ResponseEntity<Map<String, AnsiblePlayBookResponseDto>> executePlaybookCommand(@RequestBody AnsibleConnectionClientRequest ansibleClientRequest, String playBookPath) {
-        stopwatch.start();
         Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<>();
         LOGGER.info(AnsibleServiceConstants.EXECUTE_ANSIBLE_PLAYBOOK_IN_ANSIBLE_SERVER_IN_COMMAND_CONTROLLER_INFO);
         try {
@@ -133,12 +126,8 @@ public class CommandController {
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_THROUGH_ANSIBLE_CLIENT_MSG_ERROR, serviceFactory.gson().toJson(ansibleClientRequest), playBookPath);
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_THROUGH_ANSIBLE_CLIENT_ERROR + ex.getMessage());
-        } finally {
-            stopwatch.stop();
-            LOGGER.info(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_COMPLETED, stopwatch.getTotalTimeMillis());
         }
         return new ResponseEntity<>(ansiblecustomResponse, HttpStatus.OK);
-
     }
 
     /**
@@ -152,7 +141,6 @@ public class CommandController {
     @PostMapping(path = "/runAPlaybookWithArgs")
     @ApiOperation("Run playbook in configured servers using playbook command")
     public ResponseEntity<Map<String, AnsiblePlayBookResponseDto>> executePlaybookCommandWithArguments(@RequestBody AnsiblePlayBookClientRequest ansiblePlayBookRequest) {
-        stopwatch.start();
         Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<>();
         Map<String, ReturnValue> validateErrors = null;
         LOGGER.info(AnsibleServiceConstants.EXECUTE_ANSIBLE_PLAYBOOK_IN_ANSIBLE_SERVER_IN_COMMAND_CONTROLLER_INFO);
@@ -173,12 +161,25 @@ public class CommandController {
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_WITH_ARGS_THROUGH_ANSIBLE_CLIENT_MSG_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_WITH_ARGS_THROUGH_ANSIBLE_CLIENT_ERROR + ex.getMessage());
-        } finally {
-            stopwatch.stop();
-            LOGGER.info(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_COMPLETED, stopwatch.getTotalTimeMillis());
         }
         return new ResponseEntity<>(ansiblecustomResponse, HttpStatus.OK);
-
     }
-
+    
+    @GetMapping("/stopListener")
+    @ApiOperation("Stop the kafka listener from acepting new requests")
+    public ResponseEntity<String> stopKafkaListener() {
+        kafkaHelper.stopListeners();
+        LOGGER.info("Stopped Kafka Listener");
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    /**
+     * Static endpoint for checking health check
+     * @return
+     */
+    @GetMapping("/status")
+    @ApiOperation("To check the service status")
+    public String status() {
+        return "Ansible service running";
+    }
 }

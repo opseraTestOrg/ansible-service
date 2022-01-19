@@ -17,14 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StopWatch;
 
-import com.google.gson.stream.JsonWriter;
 import com.opsera.ansible.client.command.PlaybookCommand;
 import com.opsera.ansible.client.util.AnsibleClient;
 import com.opsera.ansible.client.util.ReturnValue;
 import com.opsera.ansible.client.util.ReturnValue.Result;
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.dto.AnsibleConnectionClientRequest;
 import com.opsera.ansible.dto.AnsiblePlayBookClientRequest;
 import com.opsera.ansible.dto.AnsiblePlayBookResponseDto;
@@ -54,7 +52,7 @@ public class CommandService {
     public static final Logger LOGGER = LoggerFactory.getLogger(CommandService.class);
 
     @Autowired
-    private IServiceFactory serviceFactory;
+    private ServiceFactory serviceFactory;
 
     @Autowired
     AnsibleServiceFactory ansibleServiceFactory;
@@ -64,9 +62,6 @@ public class CommandService {
 
     @Autowired
     private ClientUtility clientUtility;
-
-    @Autowired
-    private StopWatch stopwatch;
 
     @Autowired
     private AnsibleUtility ansibleUtility;
@@ -355,7 +350,6 @@ public class CommandService {
      * @param AnsiblePlayBookClientRequest ansiblePlayBookRequest
      */
     public Map<String, AnsiblePlayBookResponseDto> executePlaybookCommandWithArguments(AnsiblePlayBookClientRequest ansiblePlayBookRequest) {
-        stopwatch.start();
         Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<>();
         Map<String, ReturnValue> validateErrors = null;
         LOGGER.info(AnsibleServiceConstants.EXECUTE_ANSIBLE_PLAYBOOK_IN_ANSIBLE_SERVER_IN_COMMAND_CONTROLLER_INFO);
@@ -376,9 +370,6 @@ public class CommandService {
         } catch (Exception ex) {
             LOGGER.error(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_WITH_ARGS_THROUGH_ANSIBLE_CLIENT_ERROR, serviceFactory.gson().toJson(ansiblePlayBookRequest));
             throw new AnsibleServiceException(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_WITH_ARGS_THROUGH_ANSIBLE_CLIENT_ERROR + ex.getMessage());
-        } finally {
-            stopwatch.stop();
-            LOGGER.info(AnsibleServiceConstants.EXECUTING_PLAYBOOK_COMMAND_COMPLETED, stopwatch.getTotalTimeMillis());
         }
         return ansiblecustomResponse;
     }

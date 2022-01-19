@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.opsera.ansible.config.AppConfig;
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.dto.ToolsConfigurations;
 import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
@@ -33,7 +33,7 @@ public class ToolConfigurationService {
     RestTemplate restTemplate;
 
     @Autowired
-    IServiceFactory serviceFactory;
+    ServiceFactory serviceFactory;
 
     /**
      * Making a Rest call to Mongo Database to get the tool Configuration Details
