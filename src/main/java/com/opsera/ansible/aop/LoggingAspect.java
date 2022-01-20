@@ -16,7 +16,7 @@ public class LoggingAspect
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);
  
     //AOP expression for which methods shall be intercepted
-    @Around("execution(* com.opsera.ansible.controller..*(..)))")
+    @Around("execution(* com.opsera.ansible.controller..*(..)) && !execution(* com.opsera.ansible.controller.*.status(..))")
     public Object profileAllMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable 
     {
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
