@@ -8,7 +8,8 @@ spring:
   application:
     name: ansible-service
     description: API interacting with ansible endpoints
-  lifecycle:    timeout-per-shutdown-phase: 2h
+  lifecycle:
+    timeout-per-shutdown-phase: 2h
   servlet:
      multipart:
        max-file-size: 100MB
@@ -46,8 +47,8 @@ kafka:
     bootstrapServer: kafka.kafka.svc.cluster.local:9092
     groupId: s3-log-pusher
 amazonProperties:
-  accessKey: AKIAWNKXHD3IUKQXB3FI
-  secretKey: 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
+  accessKey: AKIAWNKXHD3I53KF2WOT
+  secretKey: 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
 
 ---
 
@@ -69,5 +70,5 @@ kafka:
     bootstrapServer: abfddd837c0914516aeff9f3ef667b10-866acafb6124ce47.elb.us-east-2.amazonaws.com:9094
     groupId: s3-log-pusher
 amazonProperties:
-  accessKey: AKIAWNKXHD3IUKQXB3FI
-  secretKey: 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
+  accessKey: AKIAWNKXHD3I53KF2WOT
+  secretKey: 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
