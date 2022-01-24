@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
-import com.google.gson.stream.JsonWriter;
 import com.opsera.ansible.client.command.PlaybookCommand;
 import com.opsera.ansible.client.util.AnsibleClient;
 import com.opsera.ansible.client.util.ReturnValue;
@@ -50,6 +49,7 @@ import com.opsera.ansible.util.KafkaHelper;
  */
 @Service
 public class CommandService {
+
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CommandService.class);
 
@@ -326,29 +326,25 @@ public class CommandService {
         String stepId = ansiblePayloadRequestConfig.getStepId();
         String customerId = ansiblePayloadRequestConfig.getCustomerId();
         int runCount = ansiblePayloadRequestConfig.getRunCount();
-        kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_STATUS_TOPIC, serviceFactory.gson()
-                .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.RUNNING.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_RECEIVED, runCount)));
+        Map<String, JobStatus> jobStatus=new HashMap<>();
+        Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<String, AnsiblePlayBookResponseDto>();
+        LOGGER.info(AnsibleKafkaConstants.ANSIBLE_REQUEST_FOR_RESPONSE_TOPIC);
         kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_RESPONSE_TOPIC, serviceFactory.gson()
                 .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.RUNNING.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_RECEIVED, runCount)));
         try {
             AnsibleService ansibleService = ansibleServiceFactory.getAnsibleService(AnsibleServiceType.ExecutePlaybook);
             AnsiblePlayBookClientRequest ansiblePlayBookClientRequest = ansibleService.getAnsiblePlaybookRequestFromKafka(ansiblePayloadRequestConfig);
             ansiblePlayBookClientRequest = setAnsibleClientConnectionDetails(ansiblePayloadRequestConfig, ansiblePlayBookClientRequest);
-            Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = executePlaybookCommandWithArguments(ansiblePlayBookClientRequest);
-            Map<String, JobStatus> jobStatus = ansibleService.getAnsibleJobStatus(ansiblecustomResponse);            
+            ansiblecustomResponse = executePlaybookCommandWithArguments(ansiblePlayBookClientRequest);
+            jobStatus = ansibleService.getAnsibleJobStatus(ansiblecustomResponse);            
             LOGGER.info(AnsibleServiceConstants.EXECUTING_BEFORE_PUSHING_LOG_KAFKA_INFO, serviceFactory.gson().toJson(ansiblePayloadRequestConfig),serviceFactory.gson().toJson(jobStatus));
-            postStatustoKafka(ansiblePayloadRequestConfig, jobStatus, ansiblecustomResponse);
+            postStatustoKafka(ansiblePayloadRequestConfig, jobStatus, ansiblecustomResponse, false);
             LOGGER.info(AnsibleServiceConstants.EXECUTING_AFTER_PUSHING_LOG_KAFKA_INFO, serviceFactory.gson().toJson(ansiblePayloadRequestConfig),serviceFactory.gson().toJson(jobStatus));
             
         } catch (Exception ex) {
-            LOGGER.error(AnsibleServiceConstants.ERROR_WHILE_EXECUTING_PLAYBOOK_FROM_KAFKA ,ex.getMessage() , serviceFactory.gson().toJson(ansiblePayloadRequestConfig));
             
-            kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_STATUS_TOPIC, serviceFactory.gson()
-                    .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE, runCount)));
-
-            kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson()
-                    .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE + ex.getMessage() , runCount)));
-        }
+            LOGGER.error(AnsibleServiceConstants.ERROR_WHILE_EXECUTING_PLAYBOOK_FROM_KAFKA ,ex.getMessage() , serviceFactory.gson().toJson(ansiblePayloadRequestConfig));
+            postStatustoKafka(ansiblePayloadRequestConfig, jobStatus, ansiblecustomResponse, true);        }
     }
 
     /**
@@ -465,37 +461,57 @@ public class CommandService {
      * @param ansiblePayloadRequestConfig
      * @param ansiblejobStatusMap
      * @param ansiblecustomResponse
+     * @param isError TODO
      */
-    public void postStatustoKafka(AnsiblePayloadRequestConfig ansiblePayloadRequestConfig, Map<String, JobStatus> ansiblejobStatusMap, Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse) {
+    public void postStatustoKafka(AnsiblePayloadRequestConfig ansiblePayloadRequestConfig, Map<String, JobStatus> ansiblejobStatusMap, Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse, boolean isError) {
         String pipelineId = ansiblePayloadRequestConfig.getPipelineId();
         String stepId = ansiblePayloadRequestConfig.getStepId();
         String customerId = ansiblePayloadRequestConfig.getCustomerId();
         int runCount = ansiblePayloadRequestConfig.getRunCount();
-        kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson()
-                .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, serviceFactory.gson().toJson(ansiblecustomResponse), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCESS, runCount)));
-
-        if (ansiblejobStatusMap != null) {
-            ansiblejobStatusMap.entrySet().parallelStream().filter(Objects::nonNull).forEach(ansibleResInstance -> {
-                JobStatus jobStatus = ansibleResInstance.getValue();
-                String hostName = ansibleResInstance.getKey();
-                if (jobStatus != null && jobStatus == JobStatus.SUCCESS) {
-                    kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson().toJson(
-                            ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, hostName, JobStatus.SUCCESS.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCESS, runCount)));
-                } else {
-                    kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson().toJson(
-                            ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, hostName, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE, runCount)));
-                }
-            });
+//        kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson()
+//                .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, serviceFactory.gson().toJson(ansiblecustomResponse), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCESS_FOR_LOG_TOPIC, runCount)));
+        if (!isError) {
+        LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_SUCCESS_FOR_ANSIBLE_LOG_TOPIC);
+        kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson().toJson(
+                ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.SUCCESS.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCCESS_FOR_LOG_TOPIC + serviceFactory.gson().toJson(ansiblecustomResponse), runCount)));
+        
+        LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_SUCCESS_FOR_ANSIBLE_STATUS_TOPIC);
+        kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_STATUS_TOPIC, serviceFactory.gson()
+                .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.SUCCESS.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCCESS_FOR_STATUS_TOPIC , runCount)));
+        }else {
+            LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_FAILED_FOR_ANSIBLE_LOG_TOPIC);
+          kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson().toJson(
+                  ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE_FOR_LOG_TOPIC + serviceFactory.gson().toJson(ansiblecustomResponse), runCount)));
+          
+          LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_FAILED_FOR_ANSIBLE_STATUS_TOPIC);
+          kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_STATUS_TOPIC, serviceFactory.gson()
+                  .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE_FOR_STATUS_TOPIC , runCount)));
         }
-        if (!ansiblejobStatusMap.isEmpty() && ansiblejobStatusMap.containsValue(JobStatus.FAILED)) {
-            kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_STATUS_TOPIC, serviceFactory.gson()
-                    .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE, runCount)));
-
-        } else {
-            kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_STATUS_TOPIC, serviceFactory.gson()
-                    .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.SUCCESS.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCESS, runCount)));
-        }
-
+        
+//        if (ansiblejobStatusMap != null) {
+//            ansiblejobStatusMap.entrySet().parallelStream().filter(Objects::nonNull).forEach(ansibleResInstance -> {
+//                JobStatus jobStatus = ansibleResInstance.getValue();
+//                String hostName = ansibleResInstance.getKey();
+//                if (jobStatus != null && jobStatus == JobStatus.SUCCESS) {
+//                    LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_SUCCESS_FOR_ANSIBLE_LOG_TOPIC);
+//                    kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson().toJson(
+//                            ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, hostName, JobStatus.SUCCESS.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCCESS_FOR_LOG_TOPIC + hostName, runCount)));
+//                    
+//                    LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_SUCCESS_FOR_ANSIBLE_STATUS_TOPIC);
+//                    kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_STATUS_TOPIC, serviceFactory.gson()
+//                            .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.SUCCESS.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCCESS_FOR_STATUS_TOPIC + hostName, runCount)));
+//                    
+//                } else {
+//                    LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_FAILED_FOR_ANSIBLE_LOG_TOPIC);
+//                    kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_LOG_TOPIC, serviceFactory.gson().toJson(
+//                            ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, hostName, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE_FOR_LOG_TOPIC + hostName, runCount)));
+//                    
+//                    LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_FAILED_FOR_ANSIBLE_STATUS_TOPIC);
+//                    kafkaHelper.postNotificationToKafkaService(KafkaTopics.ANSIBLE_STATUS_TOPIC, serviceFactory.gson()
+//                            .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE_FOR_STATUS_TOPIC + hostName, runCount)));
+//                }
+//            });
+//        }
     }
 
 }
