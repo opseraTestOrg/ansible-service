@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.opsera.ansible.client.util.ReturnValue.Result;
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.dto.AnsiblePlayBookClientRequest;
 import com.opsera.ansible.dto.AnsiblePlayBookResponseDto;
 import com.opsera.ansible.dto.AnsiblePlaybookServerRequestDto;
@@ -31,7 +31,7 @@ import com.opsera.ansible.util.JobStatus;
 public class GenericPlaybookServiceImpl implements AnsibleService {
 
     @Autowired
-    private IServiceFactory serviceFactory;
+    private ServiceFactory serviceFactory;
 
 
     public static final Logger LOGGER = LoggerFactory.getLogger(GenericPlaybookServiceImpl.class);

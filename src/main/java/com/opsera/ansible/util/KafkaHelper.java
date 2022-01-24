@@ -3,23 +3,31 @@ package com.opsera.ansible.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.stereotype.Component;
 
 import com.opsera.ansible.config.AppConfig;
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.kafka.KafkaMessageRequest;
 import com.opsera.ansible.kafka.KafkaTopics;
 
+/**
+ * @author 91739
+ *
+ */
 @Component
 public class KafkaHelper {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(KafkaHelper.class);
 
     @Autowired
-    private IServiceFactory serviceFactory;
+    private ServiceFactory serviceFactory;
 
     @Autowired
     private AppConfig appConfig;
+    
+    @Autowired
+    private KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
     private static final String KAFKA_PUB_URL = "/v1.0/publishMessage";
     private static final String SUCCESS = "SUCCESS";
@@ -43,4 +51,13 @@ public class KafkaHelper {
         }
         return SUCCESS;
     }
+    
+    /**
+     * Stops the listener.
+     */
+    public void stopListeners() {
+        LOGGER.info("Stopping the Kafka Listeners");
+        kafkaListenerEndpointRegistry.stop();
+    }
+
 }

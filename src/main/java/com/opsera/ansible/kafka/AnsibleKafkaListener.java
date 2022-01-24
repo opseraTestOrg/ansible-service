@@ -9,7 +9,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.resources.AnsibleKafkaConstants;
 import com.opsera.ansible.service.AnsibleRequestProcessor;
 
@@ -36,7 +36,7 @@ public class AnsibleKafkaListener {
 
     /** The i service factory. */
     @Autowired
-    private IServiceFactory iServiceFactory;
+    private ServiceFactory iServiceFactory;
 
     /** The Constant LOGGER. */
     public static final Logger LOGGER = LoggerFactory.getLogger(AnsibleKafkaListener.class);
@@ -48,7 +48,6 @@ public class AnsibleKafkaListener {
      */
     @KafkaListener(topics = ANSIBLE_REQUEST_TOPIC)
     public void processAWSLambdaFunctionCreationRequest(String message) {
-        System.out.println("Message Received from kafka topic" + message);
         LOGGER.info(AnsibleKafkaConstants.ANSIBLE_REQUEST_RECEIVED_TO_EXECUTE_A_COMMAND, message);
         AnsibleRequestProcessor ansibleRequestProcessor = new AnsibleRequestProcessor(message, iServiceFactory);
         taskExecutor.execute(ansibleRequestProcessor);

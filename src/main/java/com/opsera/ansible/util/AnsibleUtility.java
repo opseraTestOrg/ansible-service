@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.opsera.ansible.client.util.ReturnValue;
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.dto.AnsiblePlayBookResponseDto;
 import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.kafka.StepExecutionResponse;
@@ -28,7 +28,7 @@ public class AnsibleUtility {
     public static final Logger LOGGER = LoggerFactory.getLogger(AnsibleUtility.class);
 
     @Autowired
-    IServiceFactory serviceFactory;
+    ServiceFactory serviceFactory;
 
     @Autowired
     private ToolConfigurationService toolConfigurationService;

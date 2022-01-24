@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opsera.ansible.config.IServiceFactory;
+import com.opsera.ansible.config.ServiceFactory;
 import com.opsera.ansible.dto.AnsiblePlayBookClientRequest;
 import com.opsera.ansible.dto.AnsiblePlayBookResponseDto;
 import com.opsera.ansible.dto.AnsiblePlaybookServerRequestDto;
@@ -25,7 +25,7 @@ import com.opsera.ansible.util.JobStatus;
 public class DeleteCheckoutFolderServiceImpl implements AnsibleService {
 
     @Autowired
-    private IServiceFactory serviceFactory;
+    private ServiceFactory serviceFactory;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DeleteCheckoutFolderServiceImpl.class);
 
