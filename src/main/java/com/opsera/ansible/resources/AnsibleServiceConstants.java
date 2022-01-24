@@ -138,4 +138,10 @@ public class AnsibleServiceConstants {
     public static final String ERROR_WHILE_EXECUTING_PLAYBOOK_FROM_KAFKA = "Error while executing play book from Kafka in  CommandService :: executePlaybook {} {} ";
     public static final String EXECUTING_BEFORE_PUSHING_LOG_KAFKA_INFO = "Executing before pushing messages to kafka with job status: {} {}";
     public static final String EXECUTING_AFTER_PUSHING_LOG_KAFKA_INFO = "Executing after pushing messages to kafka with job status: {} {}";
+    
+    
+    public static final String INSIDE_JOB_STATUS_FAILED_FOR_ANSIBLE_STATUS_TOPIC = "Inside JobStatus as FAILED for ANSIBLE_STATUS_TOPIC";
+    public static final String INSIDE_JOB_STATUS_FAILED_FOR_ANSIBLE_LOG_TOPIC = "Inside JobStatus as FAILED for ANSIBLE_LOG_TOPIC";
+    public static final String INSIDE_JOB_STATUS_SUCCESS_FOR_ANSIBLE_STATUS_TOPIC = "Inside JobStatus as SUCCESS for ANSIBLE_STATUS_TOPIC";
+    public static final String INSIDE_JOB_STATUS_SUCCESS_FOR_ANSIBLE_LOG_TOPIC = "Inside JobStatus as SUCCESS for ANSIBLE_LOG_TOPIC";
 }
