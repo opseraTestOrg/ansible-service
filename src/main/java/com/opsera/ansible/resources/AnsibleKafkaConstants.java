@@ -22,10 +22,9 @@ public class AnsibleKafkaConstants {
     public static final String ANSIBLE_REQUEST_SUCESS="Success";
     public static final String ANSIBLE_REQUEST_FAILURE="Failure";
     public static final String ANSIBLE_REQUEST_SUCCESS_FOR_LOG_TOPIC = "In Log topic with success status  and Request was succefully processed for machine name : ";
-    public static final String ANSIBLE_REQUEST_SUCCESS_FOR_STATUS_TOPIC = "In Status topic with success status and Playbook Request was succefully processed for machine name : ";
+    public static final String ANSIBLE_REQUEST_SUCCESS_FOR_STATUS_TOPIC = "In Status topic with success status and Playbook Request was succefully processed";
     public static final String ANSIBLE_REQUEST_FAILURE_FOR_LOG_TOPIC = "In Log topic with failure status and Request was succefully processed for machine name : ";
-    public static final String ANSIBLE_REQUEST_FAILURE_FOR_STATUS_TOPIC = "In Status topic with failure status and Request was succefully processed for machine name : ";
+    public static final String ANSIBLE_REQUEST_FAILURE_FOR_STATUS_TOPIC = "In Status topic with failure status and Request was succefully processed";
     public static final String ANSIBLE_REQUEST_FOR_RESPONSE_TOPIC = "In response topic , Ansible Request received and its under prorcessing ";
     
-
 }

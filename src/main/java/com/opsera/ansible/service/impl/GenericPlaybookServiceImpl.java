@@ -19,7 +19,6 @@ import com.opsera.ansible.exception.AnsibleServiceException;
 import com.opsera.ansible.resources.AnsiblePayloadRequestConfig;
 import com.opsera.ansible.resources.AnsibleServiceConstants;
 import com.opsera.ansible.service.AnsibleService;
-import com.opsera.ansible.service.AnsibleServiceFactory.AnsibleServiceType;
 import com.opsera.ansible.util.JobStatus;
 
 /**
