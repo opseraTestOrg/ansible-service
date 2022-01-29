@@ -318,6 +318,7 @@ public class CommandService {
      * @param AnsiblePayloadRequestConfig ansiblePayloadRequestConfig
      */
     public void executePlaybook(AnsiblePayloadRequestConfig ansiblePayloadRequestConfig) {
+        LOGGER.info("Inside Exceute Playbook begining {}" , serviceFactory.gson().toJson(ansiblePayloadRequestConfig));
         String pipelineId = ansiblePayloadRequestConfig.getPipelineId();
         String stepId = ansiblePayloadRequestConfig.getStepId();
         String customerId = ansiblePayloadRequestConfig.getCustomerId();
