@@ -318,6 +318,7 @@ public class CommandService {
      * @param AnsiblePayloadRequestConfig ansiblePayloadRequestConfig
      */
     public void executePlaybook(AnsiblePayloadRequestConfig ansiblePayloadRequestConfig) {
+        LOGGER.info("Inside Exceute Playbook begining {}" , serviceFactory.gson().toJson(ansiblePayloadRequestConfig));
         String pipelineId = ansiblePayloadRequestConfig.getPipelineId();
         String stepId = ansiblePayloadRequestConfig.getStepId();
         String customerId = ansiblePayloadRequestConfig.getCustomerId();
@@ -338,7 +339,7 @@ public class CommandService {
             LOGGER.info(AnsibleServiceConstants.EXECUTING_AFTER_PUSHING_LOG_KAFKA_INFO, serviceFactory.gson().toJson(ansiblePayloadRequestConfig),serviceFactory.gson().toJson(jobStatus));
             
         } catch (Exception ex) {
-            
+            ex.printStackTrace();
             LOGGER.error(AnsibleServiceConstants.ERROR_WHILE_EXECUTING_PLAYBOOK_FROM_KAFKA ,ex.getMessage() , serviceFactory.gson().toJson(ansiblePayloadRequestConfig));
             postStatustoKafka(ansiblePayloadRequestConfig, jobStatus, ansiblecustomResponse, true);        }
     }
@@ -427,6 +428,7 @@ public class CommandService {
         try {
 
             ToolsConfigurations toolsConfigurations = toolConfigurationService.getToolConfigurationDetails(toolConfigId, customerId);
+            System.out.println("ToolsConfigurations ------------------------->"+serviceFactory.gson().toJson(toolsConfigurations));
             if (toolsConfigurations != null) {
                 ToolsConfigDetails toolsConfigDetails = toolsConfigurations.getConfiguration();
                 VaultConfig valutConfig = toolsConfigDetails.getPublicKey();
@@ -438,6 +440,7 @@ public class CommandService {
                     ansibleClientRequest.setPort(0);
                 }
                 Map<String, String> secrets = serviceFactory.getVaultHelper().getSecrets(toolsConfigurations.getOwner(), Arrays.asList(valutConfig.getVaultKey()));
+                System.out.println("Valut Key---------------------------------->"+secrets.get(valutConfig.getVaultKey()));
                 ansibleClientRequest.setPubKeyPath(secrets.get(valutConfig.getVaultKey()));
                 ansibleClientRequest.setUserName(toolsConfigDetails.getUserName());
                 ansiblePlayBookRequest.setAnsibleClientRequest(ansibleClientRequest);
