@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public enum KafkaTopics {
 
-    ANSIBLE_RESPONSE_TOPIC("opsera.pipeline.ansible.response"), ANSIBLE_STATUS_TOPIC("opsera.pipeline.ansible.status"), ANSIBLE_LOG_TOPIC("opsera.pipeline.ansible.log");
+    OPSERA_PIPELINE_RESPONSE("opsera.pipeline.response"), OPSERA_PIPELINE_STATUS("opsera.pipeline.status"), OPSERA_PIPELINE_LOG("opsera.pipeline.log");
 
     private String topicName;
 
