@@ -2,8 +2,6 @@ logging:
   file: 
     name: ansibleService
     path: /apps/OpsERA/logs/components/ansible-service
-hosted:
-  zoneId: Z1TIQL15FE1S33
 spring:
   application:
     name: ansible-service
@@ -27,28 +25,30 @@ spring:
 server:
   port: 9080
   shutdown: graceful
+
+pipeline:
+  config:
+    baseurl: ${opsera.config.baseurl}/api/pipeline
+vault:
+  config:
+    baseurl: ${opsera.config.baseurl}/api/vault
+customer:
+  config:
+    baseurl: ${opsera.config.baseurl}/api/customer/
+kafka:
+  config:
+    baseurl: ${opsera.config.baseurl}/api/kafka
 ---
 
 spring:
   profiles: kubernetes
-pipeline:
-  config:
-    baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/pipeline
-vault:
-  config:
-    baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/vault
-customer:
-  config:
-    baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/customer/
 kafka:
-  config:
-    baseurl: http://opsera-apigateway.microservices.svc.cluster.local:9091/api/kafka
   consumer:
-    bootstrapServer: kafka.kafka.svc.cluster.local:9092
-    groupId: s3-log-pusher
-amazonProperties:
-  accessKey: AKIAWNKXHD3I53KF2WOT
-  secretKey: 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
+    bootstrapServer: ${OPSERA_KAFKA_BOOTSTRAP_URL:kafka.kafka.svc.cluster.local:9092}
+    groupId: ansible-service
+opsera:
+  config:
+    baseurl: ${OPSERA_API_SERVICE_URL:http://opsera-apigateway.microservices.svc.cluster.local:9091}
 
 ---
 
