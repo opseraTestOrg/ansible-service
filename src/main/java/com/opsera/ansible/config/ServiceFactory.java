@@ -5,10 +5,11 @@ package com.opsera.ansible.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.opsera.ansible.service.CommandService;
-import com.opsera.ansible.service.VaultService;
+import com.opsera.ansible.service.VaultHelper;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -26,9 +27,12 @@ public class ServiceFactory {
     private Gson gson;
 
     @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
     private CommandService commandService;
 
     @Autowired
-    private VaultService vaultHelper;
+    private VaultHelper vaultHelper;
 
 }

@@ -73,10 +73,7 @@
 		<appender-ref ref="applicationLog" />
 		<appender-ref ref="console" />
 	</logger>
-   <logger name="com.opsera.core" level="DEBUG">
-		<appender-ref ref="applicationLog" />
-		<appender-ref ref="console" />
-	</logger>
+
 	<logger name="org.springframework" level="INFO">
 		<appender-ref ref="springLog" />
 		<appender-ref ref="console" />
