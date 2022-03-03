@@ -40,7 +40,6 @@ import com.opsera.ansible.service.impl.GenericPlaybookServiceImpl;
 import com.opsera.ansible.util.AnsibleUtility;
 import com.opsera.ansible.util.ClientUtility;
 import com.opsera.ansible.util.JobStatus;
-import com.opsera.ansible.util.KafkaHelper;
 
 /**
  * @author sreeni
@@ -69,7 +68,7 @@ public class CommandService {
 
     /** The kafka helper. */
     @Autowired
-    private KafkaHelper kafkaHelper;
+    private com.opsera.core.helper.KafkaHelper kafkaHelper;
 
     @Autowired
     private ToolConfigurationService toolConfigurationService;
@@ -326,7 +325,7 @@ public class CommandService {
         Map<String, JobStatus> jobStatus=new HashMap<>();
         Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<String, AnsiblePlayBookResponseDto>();
         LOGGER.info(AnsibleKafkaConstants.ANSIBLE_REQUEST_FOR_RESPONSE_TOPIC);
-        kafkaHelper.postNotificationToKafkaService(KafkaTopics.OPSERA_PIPELINE_RESPONSE, serviceFactory.gson()
+        kafkaHelper.postNotificationToKafka(KafkaTopics.OPSERA_PIPELINE_RESPONSE.getTopicName(), serviceFactory.gson()
                 .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.RUNNING.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_RECEIVED, runCount)));
         try {
             AnsibleService ansibleService = ansibleServiceFactory.getAnsibleService(AnsibleServiceType.ExecutePlaybook);
@@ -467,19 +466,19 @@ public class CommandService {
 //                .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, serviceFactory.gson().toJson(ansiblecustomResponse), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCESS_FOR_LOG_TOPIC, runCount)));
         if (!isError) {
         LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_SUCCESS_FOR_ANSIBLE_LOG_TOPIC);
-        kafkaHelper.postNotificationToKafkaService(KafkaTopics.OPSERA_PIPELINE_LOG, serviceFactory.gson().toJson(
+        kafkaHelper.postNotificationToKafka(KafkaTopics.OPSERA_PIPELINE_LOG.getTopicName(), serviceFactory.gson().toJson(
                 ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.SUCCESS.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCCESS_FOR_LOG_TOPIC + serviceFactory.gson().toJson(ansiblecustomResponse), runCount)));
         
         LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_SUCCESS_FOR_ANSIBLE_STATUS_TOPIC);
-        kafkaHelper.postNotificationToKafkaService(KafkaTopics.OPSERA_PIPELINE_STATUS, serviceFactory.gson()
+        kafkaHelper.postNotificationToKafka(KafkaTopics.OPSERA_PIPELINE_STATUS.getTopicName(), serviceFactory.gson()
                 .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.SUCCESS.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_SUCCESS_FOR_STATUS_TOPIC , runCount)));
         }else {
             LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_FAILED_FOR_ANSIBLE_LOG_TOPIC);
-          kafkaHelper.postNotificationToKafkaService(KafkaTopics.OPSERA_PIPELINE_LOG, serviceFactory.gson().toJson(
+          kafkaHelper.postNotificationToKafka(KafkaTopics.OPSERA_PIPELINE_LOG.getTopicName(), serviceFactory.gson().toJson(
                   ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE_FOR_LOG_TOPIC + serviceFactory.gson().toJson(ansiblecustomResponse), runCount)));
           
           LOGGER.info(AnsibleServiceConstants.INSIDE_JOB_STATUS_FAILED_FOR_ANSIBLE_STATUS_TOPIC);
-          kafkaHelper.postNotificationToKafkaService(KafkaTopics.OPSERA_PIPELINE_STATUS, serviceFactory.gson()
+          kafkaHelper.postNotificationToKafka(KafkaTopics.OPSERA_PIPELINE_STATUS.getTopicName(), serviceFactory.gson()
                   .toJson(ansibleUtility.createStepExecutionResponse(pipelineId, stepId, customerId, JobStatus.FAILED.name(), AnsibleKafkaConstants.ANSIBLE_REQUEST_FAILURE_FOR_STATUS_TOPIC , runCount)));
         }
         
