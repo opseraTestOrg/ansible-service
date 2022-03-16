@@ -34,7 +34,8 @@ import com.opsera.ansible.service.AnsibleServiceFactory;
 import com.opsera.ansible.service.CommandService;
 import com.opsera.ansible.util.AnsibleUtility;
 import com.opsera.ansible.util.ClientUtility;
-import com.opsera.ansible.util.KafkaHelper;
+import com.opsera.core.aspects.TrackExecutionTime;
+import com.opsera.core.helper.KafkaHelper;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -76,6 +77,7 @@ public class CommandController {
      */
     @PostMapping(path = "/testConnection")
     @ApiOperation("Test Connectivity with Ansible server")
+    @TrackExecutionTime
     public ResponseEntity<Map<String, AnsiblePlayBookResponseDto>> executePingCommand(@RequestBody AnsibleConnectionClientRequest ansibleClientRequest) {
         Map<String, ReturnValue> result = new HashMap<String, ReturnValue>();
         Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<>();
@@ -112,6 +114,7 @@ public class CommandController {
      */
     @PostMapping(path = "/runAPlaybook")
     @ApiOperation("Run playbook in configured servers using playbook command")
+    @TrackExecutionTime
     public ResponseEntity<Map<String, AnsiblePlayBookResponseDto>> executePlaybookCommand(@RequestBody AnsibleConnectionClientRequest ansibleClientRequest, String playBookPath) {
         Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<>();
         LOGGER.info(AnsibleServiceConstants.EXECUTE_ANSIBLE_PLAYBOOK_IN_ANSIBLE_SERVER_IN_COMMAND_CONTROLLER_INFO);
@@ -140,6 +143,7 @@ public class CommandController {
      */
     @PostMapping(path = "/runAPlaybookWithArgs")
     @ApiOperation("Run playbook in configured servers using playbook command")
+    @TrackExecutionTime
     public ResponseEntity<Map<String, AnsiblePlayBookResponseDto>> executePlaybookCommandWithArguments(@RequestBody AnsiblePlayBookClientRequest ansiblePlayBookRequest) {
         Map<String, AnsiblePlayBookResponseDto> ansiblecustomResponse = new HashMap<>();
         Map<String, ReturnValue> validateErrors = null;
@@ -167,6 +171,7 @@ public class CommandController {
     
     @GetMapping("/stopListener")
     @ApiOperation("Stop the kafka listener from acepting new requests")
+    @TrackExecutionTime
     public ResponseEntity<String> stopKafkaListener() {
         kafkaHelper.stopListeners();
         LOGGER.info("Stopped Kafka Listener");
@@ -179,6 +184,7 @@ public class CommandController {
      */
     @GetMapping("/status")
     @ApiOperation("To check the service status")
+    @TrackExecutionTime
     public String status() {
         return "Ansible service running";
     }
