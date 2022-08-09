@@ -16,6 +16,6 @@ EXPOSE 9080
 ENTRYPOINT exec /tini -- java \
             -XshowSettings:vm \
             -XX:+UseContainerSupport \
-            -Dspring.profiles.active=$DOCKER_ENV \
+            -Dspring.profiles.active=$DOCKER_ENV $JAVA_OPTS \
             -Djava.security.egd=file:/dev/./urandom \
             -jar /apps/OpsERA/components/ansible-services/ansible-services.jar
