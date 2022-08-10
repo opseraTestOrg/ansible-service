@@ -8,7 +8,7 @@ RUN ls -lrta /home/gradle/src/build/libs/*.jar
 FROM eclipse-temurin:11-jre
 RUN apt-get update && apt-get install -y curl dnsutils iputils-ping
 RUN mkdir -p /apps/OpsERA/components/ansible-services
-COPY --from=build /home/gradle/src/build/libs/ansible-service-0.0.1-SNAPSHOT.jar /apps/OpsERA/components/ansible-services/ansible-services.jar
+COPY --from=build /home/gradle/src/build/libs/*.jar /apps/OpsERA/components/ansible-services/ansible-services.jar
 ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
