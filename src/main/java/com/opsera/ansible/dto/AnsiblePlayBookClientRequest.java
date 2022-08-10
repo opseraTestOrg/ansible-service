@@ -1,10 +1,7 @@
 package com.opsera.ansible.dto;
 
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.opsera.ansible.service.AnsibleServiceFactory.AnsibleServiceType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -8,6 +8,10 @@ spring:
     description: API interacting with ansible endpoints
   lifecycle:
     timeout-per-shutdown-phase: 2h
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+
   servlet:
      multipart:
        max-file-size: 100MB

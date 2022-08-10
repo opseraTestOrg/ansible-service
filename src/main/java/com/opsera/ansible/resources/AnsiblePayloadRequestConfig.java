@@ -3,8 +3,6 @@
  */
 package com.opsera.ansible.resources;
 
-import java.util.Map;
-
 import lombok.Data;
 
 /**
