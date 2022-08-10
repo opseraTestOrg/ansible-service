@@ -55,6 +55,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation group: 'com.hierynomus', name: 'sshj', version: '0.26.0'
+	compile('com.fasterxml.uuid:java-uuid-generator:3.1.0'){
+	       exclude group: 'log4j'
+	}
 	implementation group: 'net.sf.expectit', name: 'expectit-core', version: '0.9.0'
 	implementation group: 'org.apache.commons', name: 'commons-pool2', version: '2.10.0'
 	implementation group: 'org.assertj', name: 'assertj-core', version: '3.20.1'
