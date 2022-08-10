@@ -65,7 +65,7 @@ public class CommandController {
 
     @Autowired
     AnsibleServiceFactory ansibleServiceFactory;
-    
+
     @Autowired
     KafkaHelper kafkaHelper;
 
@@ -168,7 +168,7 @@ public class CommandController {
         }
         return new ResponseEntity<>(ansiblecustomResponse, HttpStatus.OK);
     }
-    
+
     @GetMapping("/stopListener")
     @ApiOperation("Stop the kafka listener from acepting new requests")
     @TrackExecutionTime
@@ -177,14 +177,14 @@ public class CommandController {
         LOGGER.info("Stopped Kafka Listener");
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    
+
     /**
      * Static endpoint for checking health check
+     * 
      * @return
      */
     @GetMapping("/status")
     @ApiOperation("To check the service status")
-    @TrackExecutionTime
     public String status() {
         return "Ansible service running";
     }
